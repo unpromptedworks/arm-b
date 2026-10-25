@@ -136,4 +136,30 @@ export const clocks = [
       ["Computing Greenwich Apparent Sidereal Time", "https://aa.usno.navy.mil/faq/GAST", "U.S. Naval Observatory, U.S. government work"],
     ],
   },
+  {
+    no: 8,
+    id: "moon",
+    slug: "age-of-the-moon",
+    name: "The age of the Moon",
+    basis: "UTC",
+    teaser: "Days since the new moon, the oldest month there is.",
+    description:
+      "A live clock showing the age of the Moon, the time since the last new moon, with its phase drawn and the next full and new moons.",
+    read: `
+      <p>The reading is the Moon’s age: the time since the last new moon, when the Moon passed between the Earth and the Sun. The number of days counted from the new moon is what has long been called the Moon’s age.<sup><a href="#s2">2</a></sup> The bar fills over one lunation, from one new moon to the next, and the line under the reading names the phase and how much of the face is lit.</p>
+      <p>The drawing shows the Moon as seen from the northern hemisphere, where the waxing Moon is lit on the right. From the southern hemisphere it appears the other way round;<sup><a href="#s2">2</a></sup> the button mirrors it. The lunation number is Jean Meeus’s count, which starts at 0 with the first new moon of 2000, at about 18:14 UTC on 6 January.<sup><a href="#s3">3</a></sup></p>`,
+    history: `
+      <p>On average a lunation lasts 29.53059 days, or 29 days 12 hours 44 minutes 3 seconds, but any single one may run from about 29.27 to 29.83 days.<sup><a href="#s1">1</a></sup> The word <i>synodic</i>, for this month of phases, comes from the Greek for a meeting: of the Sun and the Moon.<sup><a href="#s1">1</a></sup> Calendars still keep it. The Chinese calendar begins its month at the new moon, and the Islamic calendar begins a month when the first crescent is actually seen, so the start of a month cannot be known for certain in advance.<sup><a href="#s3">3</a></sup></p>
+      <p>The Moon does not keep even time. Its orbit is an ellipse, and the Sun pulls on it, and the largest corrections have old names. The evection, or something close to it, was known to Ptolemy; the variation, a speeding-up of the Moon as it nears new and full moon, was discovered by Tycho Brahe.<sup><a href="#s4">4</a></sup></p>
+      <p>So this clock does not just count off the average month. It works out the angle between the Moon and the Sun from the Moon’s mean motions as given by Meeus,<sup><a href="#s5">5</a></sup> seven of the principal correction terms in its longitude,<sup><a href="#s4">4</a></sup> and the Naval Observatory’s approximate formula for the Sun.<sup><a href="#s6">6</a></sup> Checked against the Observatory’s times for the new and full moons of September to December 2026, it was never more than 21 minutes out.<sup><a href="#s7">7</a></sup></p>`,
+    sources: [
+      ["Lunar month", "https://en.wikipedia.org/wiki/Lunar_month", "Wikipedia, CC BY-SA 4.0"],
+      ["Lunar phase", "https://en.wikipedia.org/wiki/Lunar_phase", "Wikipedia, CC BY-SA 4.0"],
+      ["New moon", "https://en.wikipedia.org/wiki/New_moon", "Wikipedia, CC BY-SA 4.0"],
+      ["Lunar theory", "https://en.wikipedia.org/wiki/Lunar_theory", "Wikipedia, CC BY-SA 4.0"],
+      ["Jean Meeus, Astronomical Algorithms, 2nd edition, chapter 47", null, "Willmann-Bell, 1998; mean elements of the Moon"],
+      ["Approximate Solar Coordinates", "https://aa.usno.navy.mil/faq/sun_approx", "U.S. Naval Observatory, U.S. government work"],
+      ["Phases of the Moon, 2026", "https://aa.usno.navy.mil/data/MoonPhases", "U.S. Naval Observatory, U.S. government work"],
+    ],
+  },
 ];

@@ -3,7 +3,8 @@
 // shows: a main reading, a line under it, and how far through its current
 // unit it is (0 to 1), drawn as the bar along the bottom of the dial.
 // Nothing here talks to the network; the only stored value is the
-// longitude a reader may type on the sidereal page, kept in localStorage.
+// longitude a reader may type on the sidereal page and the hemisphere chosen
+// on the moon page, both kept in localStorage.
 
 (function () {
   "use strict";
@@ -57,6 +58,64 @@
     const t = Math.floor(hours * 3600);
     return `${pad(Math.floor(t / 3600))}:${pad(Math.floor(t / 60) % 60)}:${pad(t % 60)}`;
   }
+
+
+  // The Moon. Elongation (Moon's longitude minus the Sun's) from the mean
+  // elements in Meeus, Astronomical Algorithms (2nd ed., ch. 47), seven
+  // principal periodic terms from Wikipedia's "Lunar theory", and the
+  // USNO's approximate Sun (https://aa.usno.navy.mil/faq/sun_approx).
+  // 0° is new moon, 180° full. Good to about twenty minutes in time.
+  const SYNODIC = 29.530588861; // mean synodic month, days
+  const LN0 = 2451550.26; // Meeus lunation 0: new moon of 6 Jan 2000
+  const rad = Math.PI / 180;
+  const sin = (x) => Math.sin(x * rad);
+  const norm = (a) => ((a % 360) + 360) % 360;
+  const wrap = (a) => { a = norm(a); return a > 180 ? a - 360 : a; };
+
+  function elongation(jd) {
+    const T = (jd - 2451545) / 36525;
+    const n = jd - 2451545;
+    const L = 218.3164477 + 481267.88123421 * T; // Moon's mean longitude
+    const D = 297.8501921 + 445267.1114034 * T; // mean elongation
+    const M = 357.5291092 + 35999.0502909 * T; // Sun's mean anomaly
+    const Mp = 134.9633964 + 477198.8675055 * T; // Moon's mean anomaly
+    const F = 93.272095 + 483202.0175233 * T; // argument of latitude
+    const moon = L + 6.2886 * sin(Mp) + 0.2136 * sin(2 * Mp) + 1.2739 * sin(2 * D - Mp) +
+      0.6583 * sin(2 * D) - 0.1856 * sin(M) - 0.1144 * sin(2 * F) - 0.0347 * sin(D);
+    const g = 357.529 + 0.98560028 * n;
+    const sun = 280.459 + 0.98564736 * n + 1.915 * sin(g) + 0.02 * sin(2 * g);
+    return norm(moon - sun);
+  }
+
+  // The moment near jd when the elongation equals target, by Newton steps.
+  function seek(jd, target) {
+    let t = jd;
+    for (let i = 0; i < 5; i++) t -= wrap(elongation(t) - target) / (360 / SYNODIC);
+    return t;
+  }
+
+  function lunation(jd) {
+    const e = elongation(jd);
+    let last = seek(jd - e / (360 / SYNODIC), 0);
+    if (last > jd) last = seek(last - SYNODIC, 0);
+    let next = seek(last + SYNODIC, 0);
+    if (next <= jd) { last = next; next = seek(last + SYNODIC, 0); }
+    let full = seek(last + SYNODIC / 2, 180);
+    if (full <= jd) full = null;
+    return { e, last, next, full, no: Math.round((last - LN0) / SYNODIC) };
+  }
+
+  const PHASES = [[0, "New moon"], [90, "First quarter"], [180, "Full moon"], [270, "Last quarter"]];
+  function phaseName(e) {
+    for (const [at, name] of PHASES) if (Math.abs(wrap(e - at)) < 6) return name;
+    if (e < 90) return "Waxing crescent";
+    if (e < 180) return "Waxing gibbous";
+    if (e < 270) return "Waning gibbous";
+    return "Waning crescent";
+  }
+
+  const jdOf = (d) => d.getTime() / 86400000 + 2440587.5;
+  const dateOf = (jd) => new Date((jd - 2440587.5) * 86400000);
 
   const readers = {
     decimal(d) {
@@ -151,6 +210,18 @@
       }
       return { main: hms(st), sub: label, frac: st / 24, utc: true };
     },
+    moon(d) {
+      const m = lunation(jdOf(d));
+      const age = jdOf(d) - m.last;
+      const mins = Math.floor(age * 1440);
+      const lit = Math.round(((1 - Math.cos(m.e * rad)) / 2) * 100);
+      return {
+        main: `${Math.floor(mins / 1440)}d ${pad(Math.floor(mins / 60) % 24)}h ${pad(mins % 60)}m`,
+        sub: `${phaseName(m.e)}  ·  ${lit}% lit`,
+        frac: age / (m.next - m.last),
+        utc: true,
+      };
+    },
   };
 
   const dials = Array.from(document.querySelectorAll("[data-clock]")).map((el) => ({
@@ -193,6 +264,44 @@
       }
       tick();
     });
+  }
+
+  // Moon page: draw the lit part of the disc and name the next phases.
+  // Seen from the north the waxing moon is lit on the right; the button
+  // mirrors it for the southern hemisphere, remembered in this browser.
+  const moonFace = document.getElementById("moon-lit");
+  if (moonFace) {
+    const svg = document.getElementById("moon-face");
+    const facts = document.getElementById("moon-facts");
+    const flip = document.getElementById("moon-flip");
+    let south = false;
+    try { south = localStorage.getItem("coc-south") === "1"; } catch (e) { /* blocked */ }
+    const when = (jd) => dateOf(jd).toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+    const drawMoon = () => {
+      const m = lunation(jdOf(new Date()));
+      const r = 50;
+      const rx = (r * Math.abs(Math.cos(m.e * rad))).toFixed(2);
+      const waxing = m.e < 180;
+      const crescent = Math.cos(m.e * rad) > 0;
+      // Lit limb as a half circle, then back along the terminator.
+      const limb = waxing ? 1 : 0;
+      const term = waxing === crescent ? 0 : 1;
+      moonFace.setAttribute("d", `M0,${-r} A${r},${r} 0 0 ${limb} 0,${r} A${rx},${r} 0 0 ${term} 0,${-r} Z`);
+      svg.style.transform = south ? "scaleX(-1)" : "";
+      if (flip) flip.textContent = south ? "Show it as seen from the north" : "Show it as seen from the south";
+      const next = (m.full ? `Full moon ${when(m.full)}, new moon ` : "New moon ") + when(m.next);
+      const line = `${next}, your time  ·  lunation ${m.no}`;
+      if (facts.textContent !== line) facts.textContent = line;
+    };
+    drawMoon();
+    setInterval(drawMoon, 60000);
+    if (flip) {
+      flip.addEventListener("click", () => {
+        south = !south;
+        try { localStorage.setItem("coc-south", south ? "1" : "0"); } catch (e) { /* blocked */ }
+        drawMoon();
+      });
+    }
   }
 
   // Ship's bells page: strike the current count with Web Audio.

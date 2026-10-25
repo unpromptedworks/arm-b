@@ -227,3 +227,11 @@ footer.site p { margin: 0.3rem 0; }
   .drawer a { transition: none; }
   .drawer a:hover { transform: none; }
 }
+
+/* Moon page: the disc, drawn live. */
+figure.moon { margin: 1.5rem auto 0.75rem; width: 9rem; }
+figure.moon svg { display: block; width: 100%; height: auto; }
+.moon-dark { fill: var(--rule); }
+.moon-lit { fill: var(--brass); }
+.moon-rim { fill: none; stroke: var(--muted); stroke-width: 0.6; }
+#moon-facts { white-space: normal; }

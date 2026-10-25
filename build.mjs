@@ -105,6 +105,11 @@ clocks.forEach((c, i) => {
   if (c.id === "bells") {
     extra = `<div class="control"><button type="button" class="bell" id="strike">Strike the bell</button></div>`;
   }
+  if (c.id === "moon") {
+    extra = `<figure class="moon"><svg id="moon-face" viewBox="-54 -54 108 108" role="img" aria-label="The Moon’s lit part, drawn live"><circle r="50" class="moon-dark"/><path id="moon-lit" class="moon-lit" d=""/><circle r="50" class="moon-rim"/></svg></figure>
+<span class="dial-sub" id="moon-facts"></span>
+<div class="control"><button type="button" class="bell" id="moon-flip">Show it as seen from the south</button></div>`;
+  }
   write(`/clocks/${c.slug}/`, page({
     path: `/clocks/${c.slug}/`,
     title: `${c.name} · ${NAME}`,
@@ -119,7 +124,7 @@ ${c.read.trim()}
 ${c.history.trim()}
 <h2>Sources</h2>
 <ol class="sources">
-${c.sources.map(([t, u, l], k) => `<li id="s${k + 1}"><a href="${u}">${t}</a> <span class="lic">(${l})</span></li>`).join("\n")}
+${c.sources.map(([t, u, l], k) => `<li id="s${k + 1}">${u ? `<a href="${u}">${t}</a>` : `<cite>${t}</cite>`} <span class="lic">(${l})</span></li>`).join("\n")}
 </ol>
 <nav class="pager">
 <span>${prev ? `<a href="/clocks/${prev.slug}/">← ${prev.name}</a>` : `<a href="/">← All drawers</a>`}</span>
@@ -140,10 +145,10 @@ write("/about/", page({
 <p>The Cabinet of Clocks is a small collection of timekeeping systems, kept running. Some were law for a few months, some lasted two thousand years, and one is ticking inside the device you are reading this on. Each has a drawer: a live clock, a note on how to read it, and a short history with its sources.</p>
 <p>New drawers are added over time.</p>
 <h2>How the clocks work</h2>
-<p>Every clock is computed in your browser from your computer’s clock, ten times a second. Clocks marked “your local day” divide the day from your local midnight; clocks marked “Universal” work from Universal Time. None of them is more accurate than the clock they start from, and the sidereal clock uses an approximate formula good for everyday looking, not for pointing a telescope.</p>
-<p>The site sends nothing and fetches nothing from elsewhere. The one thing it remembers is a longitude you type on the sidereal page, stored in your own browser.</p>
+<p>Every clock is computed in your browser from your computer’s clock, ten times a second. Clocks marked “your local day” divide the day from your local midnight; clocks marked “Universal” work from Universal Time. None of them is more accurate than the clock they start from. The sidereal clock uses an approximate formula good for everyday looking, not for pointing a telescope, and the moon clock places the new and full moons to within about twenty minutes.</p>
+<p>The site sends nothing and fetches nothing from elsewhere. It remembers only two things, both stored in your own browser: a longitude you type on the sidereal page, and which hemisphere you choose on the moon page.</p>
 <h2>Sources and credits</h2>
-<p>Facts are drawn from the sources listed on each clock’s page, mostly Wikipedia articles under the Creative Commons Attribution-ShareAlike 4.0 licence, and the U.S. Naval Observatory. The type is your system’s own. The code and words were written for this site.</p>
+<p>Facts are drawn from the sources listed on each clock’s page, mostly Wikipedia articles under the Creative Commons Attribution-ShareAlike 4.0 licence, the U.S. Naval Observatory, and, for the Moon’s mean motions, Jean Meeus’s book <cite>Astronomical Algorithms</cite>. The type is your system’s own. The code and words were written for this site.</p>
 <p>This site was made by an AI, as part of an experiment: <a href="${ABOUT}">about the experiment</a>.</p>
 </article>`,
 }));
