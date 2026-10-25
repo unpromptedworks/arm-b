@@ -1,0 +1,229 @@
+/* Cabinet of Clocks. A museum drawer: pale card stock, ink, one brass
+   accent, catalogue numbers. System fonts only. */
+
+:root {
+  --paper: #f3eee3;
+  --card: #fbf8f1;
+  --ink: #1d1a16;
+  --muted: #6b6257;
+  --rule: #d6cdbd;
+  --brass: #9a6b1f;
+  --brass-soft: #e9dcc0;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #16130f;
+    --card: #201c17;
+    --ink: #ece4d6;
+    --muted: #a79b8a;
+    --rule: #3a332a;
+    --brass: #d4a24c;
+    --brass-soft: #3b2f1b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--paper); }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 18px/1.6 var(--serif);
+  -webkit-text-size-adjust: 100%;
+}
+
+a { color: var(--brass); text-underline-offset: 0.15em; }
+a:hover { color: var(--ink); }
+
+.wrap { max-width: 64rem; margin: 0 auto; padding: 0 16px; }
+.narrow { max-width: 40rem; }
+
+header.site {
+  border-bottom: 1px solid var(--rule);
+  padding: 1.25rem 0 1rem;
+}
+header.site .wrap { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.mark {
+  font-variant: small-caps;
+  letter-spacing: 0.12em;
+  font-size: 1.05rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+.mark span { color: var(--brass); }
+header.site nav { font-size: 0.9rem; color: var(--muted); }
+
+.intro { padding: 3rem 0 2rem; }
+.intro h1 {
+  font-weight: normal;
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  line-height: 1.1;
+  margin: 0 0 1rem;
+  letter-spacing: -0.01em;
+}
+.intro p { font-size: 1.15rem; color: var(--muted); max-width: 36rem; margin: 0; }
+
+/* The cabinet: a grid of drawers. */
+.cabinet {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+  gap: 1rem;
+}
+.drawer a {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 1rem 1.1rem 1.1rem;
+  box-shadow: 0 1px 0 var(--rule), inset 0 -3px 0 var(--brass-soft);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.drawer a:hover, .drawer a:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 var(--rule), inset 0 -3px 0 var(--brass);
+}
+.label {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.label .no { color: var(--brass); font-family: var(--mono); letter-spacing: 0; }
+.drawer h2 { font-size: 1.25rem; font-weight: normal; margin: 0.35rem 0 0.75rem; }
+.drawer p.teaser { margin: 0.75rem 0 0; font-size: 0.95rem; color: var(--muted); font-style: italic; }
+
+/* A dial: the live reading. */
+.dial { font-family: var(--mono); }
+.dial-main {
+  display: block;
+  font-size: 1.9rem;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dial-sub {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  min-height: 1.3em;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dial-bar {
+  display: block;
+  height: 3px;
+  margin-top: 0.6rem;
+  background: var(--rule);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.dial-bar span { display: block; height: 100%; width: 0; background: var(--brass); }
+
+.dial.large {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 2rem 1.25rem 1.5rem;
+  text-align: center;
+  margin: 1.5rem 0 2rem;
+}
+.dial.large .dial-main { font-size: clamp(2.2rem, 11vw, 4.5rem); }
+.dial.large .dial-sub { font-size: 0.95rem; white-space: normal; margin-top: 0.4rem; }
+.dial.large .dial-bar { height: 4px; margin: 1.25rem auto 0; max-width: 28rem; }
+.dial-plain { display: block; margin-top: 0.9rem; font-size: 0.8rem; color: var(--muted); }
+
+/* Clock pages. */
+.specimen { padding-top: 2.5rem; padding-bottom: 1rem; }
+.specimen h1 { font-weight: normal; font-size: clamp(2rem, 6vw, 3rem); line-height: 1.1; margin: 0.4rem 0 0; }
+.specimen h2 {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: normal;
+  margin: 2.25rem 0 0.25rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1rem;
+}
+.specimen sup { font-size: 0.65em; line-height: 0; }
+.specimen sup a { text-decoration: none; }
+.specimen code { font-family: var(--mono); font-size: 0.9em; }
+.sources { padding-left: 1.4rem; font-size: 0.92rem; }
+.sources li { margin-bottom: 0.3rem; }
+.sources .lic { color: var(--muted); }
+
+.control {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+  font-family: var(--serif);
+  font-size: 0.95rem;
+}
+.control input {
+  font: inherit;
+  font-family: var(--mono);
+  width: 8rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink);
+}
+button.bell {
+  font: inherit;
+  padding: 0.45rem 1.1rem;
+  border: 1px solid var(--brass);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--brass);
+  cursor: pointer;
+}
+button.bell:hover { background: var(--brass); color: var(--card); }
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--rule);
+  margin-top: 3rem;
+  padding-top: 1rem;
+  font-size: 0.95rem;
+}
+.pager a { text-decoration: none; }
+
+footer.site {
+  border-top: 1px solid var(--rule);
+  margin-top: 2rem;
+  padding: 1.25rem 0 2.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+footer.site p { margin: 0.3rem 0; }
+
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer a { transition: none; }
+  .drawer a:hover { transform: none; }
+}
