@@ -66,6 +66,7 @@ function dial(c, large) {
 }
 
 const no = (n) => "No. " + String(n).padStart(2, "0");
+const basis = (c) => ({ UTC: "Universal", local: "Your local day", sun: "Sunrise and sunset" })[c.basis];
 
 function write(path, html) {
   const file = join(OUT, path.endsWith("/") ? path + "index.html" : path);
@@ -85,7 +86,7 @@ write("/", page({
 </section>
 <ol class="cabinet">
 ${clocks.map((c) => `<li class="drawer"><a href="/clocks/${c.slug}/">
-<span class="label"><span class="no">${no(c.no)}</span><span>${c.basis === "UTC" ? "Universal" : "Your local day"}</span></span>
+<span class="label"><span class="no">${no(c.no)}</span><span>${basis(c)}</span></span>
 <h2>${c.name}</h2>
 ${dial(c, false)}
 <p class="teaser">${c.teaser}</p>
@@ -100,7 +101,12 @@ clocks.forEach((c, i) => {
   const next = clocks[i + 1];
   let extra = "";
   if (c.id === "sidereal") {
-    extra = `<div class="control"><label for="longitude">Your longitude, degrees east</label><input id="longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" placeholder="e.g. -0.13"></div>`;
+    extra = `<div class="control"><label for="longitude">Your longitude, degrees east</label><input id="longitude" data-store="coc-longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" placeholder="e.g. -0.13"></div>`;
+  }
+  if (c.id === "temporal") {
+    extra = `<span class="dial-sub" id="sun-facts"></span>
+<div class="control"><label for="latitude">Latitude, ° north</label><input id="latitude" data-store="coc-latitude" type="number" inputmode="decimal" min="-90" max="90" step="any" placeholder="e.g. 51.5"></div>
+<div class="control"><label for="longitude">Longitude, ° east</label><input id="longitude" data-store="coc-longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" placeholder="e.g. -0.13"></div>`;
   }
   if (c.id === "bells") {
     extra = `<div class="control"><button type="button" class="bell" id="strike">Strike the bell</button></div>`;
@@ -115,7 +121,7 @@ clocks.forEach((c, i) => {
     title: `${c.name} · ${NAME}`,
     description: c.description,
     body: `<article class="wrap narrow specimen">
-<span class="label"><span class="no">${no(c.no)}</span><span>${c.basis === "UTC" ? "Universal" : "Your local day"}</span></span>
+<span class="label"><span class="no">${no(c.no)}</span><span>${basis(c)}</span></span>
 <h1>${c.name}</h1>
 ${dial(c, true).replace(/<\/div>$/, extra + "</div>")}
 <h2>How to read it</h2>
@@ -145,8 +151,8 @@ write("/about/", page({
 <p>The Cabinet of Clocks is a small collection of timekeeping systems, kept running. Some were law for a few months, some lasted two thousand years, and one is ticking inside the device you are reading this on. Each has a drawer: a live clock, a note on how to read it, and a short history with its sources.</p>
 <p>New drawers are added over time.</p>
 <h2>How the clocks work</h2>
-<p>Every clock is computed in your browser from your computer’s clock, ten times a second. Clocks marked “your local day” divide the day from your local midnight; clocks marked “Universal” work from Universal Time. None of them is more accurate than the clock they start from. The sidereal clock uses an approximate formula good for everyday looking, not for pointing a telescope, and the moon clock places the new and full moons to within about twenty minutes.</p>
-<p>The site sends nothing and fetches nothing from elsewhere. It remembers only two things, both stored in your own browser: a longitude you type on the sidereal page, and which hemisphere you choose on the moon page.</p>
+<p>Every clock is computed in your browser from your computer’s clock, ten times a second. Clocks marked “your local day” divide the day from your local midnight; clocks marked “Universal” work from Universal Time. None of them is more accurate than the clock they start from. The sidereal clock uses an approximate formula good for everyday looking, not for pointing a telescope, the moon clock places the new and full moons to within about twenty minutes, and the unequal-hours clock places sunrise and sunset to within a minute or two.</p>
+<p>The site sends nothing and fetches nothing from elsewhere. It remembers only a few things, all stored in your own browser: a latitude and longitude you type on the sidereal or unequal-hours page, and which hemisphere you choose on the moon page.</p>
 <h2>Sources and credits</h2>
 <p>Facts are drawn from the sources listed on each clock’s page, mostly Wikipedia articles under the Creative Commons Attribution-ShareAlike 4.0 licence, the U.S. Naval Observatory, and, for the Moon’s mean motions, Jean Meeus’s book <cite>Astronomical Algorithms</cite>. The type is your system’s own. The code and words were written for this site.</p>
 <p>This site was made by an AI, as part of an experiment: <a href="${ABOUT}">about the experiment</a>.</p>

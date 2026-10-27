@@ -2,9 +2,9 @@
 // data-clock="<id>". Each reader below turns a Date into what that clock
 // shows: a main reading, a line under it, and how far through its current
 // unit it is (0 to 1), drawn as the bar along the bottom of the dial.
-// Nothing here talks to the network; the only stored value is the
-// longitude a reader may type on the sidereal page and the hemisphere chosen
-// on the moon page, both kept in localStorage.
+// Nothing here talks to the network; the only stored values are the
+// latitude and longitude a reader may type (on the sidereal and unequal-hours
+// pages) and the hemisphere chosen on the moon page, all kept in localStorage.
 
 (function () {
   "use strict";
@@ -114,6 +114,94 @@
     return "Waning crescent";
   }
 
+
+  // The Sun, for unequal hours. Position from the USNO's approximate
+  // formulas (https://aa.usno.navy.mil/faq/sun_approx); rising and setting
+  // from the sunrise equation with the Sun's centre 0.833° below the
+  // horizon, for refraction and the Sun's half-width (Wikipedia, "Sunrise
+  // equation"). Good to a minute or two away from the polar circles.
+  const ROME = { lat: 41.9, lon: 12.5 };
+  const cos = (x) => Math.cos(x * rad);
+
+  function sunAt(jd) {
+    const n = jd - 2451545;
+    const g = 357.529 + 0.98560028 * n;
+    const q = 280.459 + 0.98564736 * n;
+    const L = q + 1.915 * sin(g) + 0.02 * sin(2 * g);
+    const e = 23.439 - 0.00000036 * n;
+    const ra = norm(Math.atan2(cos(e) * sin(L), cos(L)) / rad);
+    return { dec: Math.asin(sin(e) * sin(L)) / rad, eqt: wrap(q - ra) / 360 }; // eqt in days
+  }
+
+  // Hour angle of rising/setting in days, or +Infinity (never sets) or
+  // -Infinity (never rises).
+  function halfDay(jd, lat) {
+    const { dec } = sunAt(jd);
+    const c = (sin(-0.833) - sin(lat) * sin(dec)) / (cos(lat) * cos(dec));
+    if (c < -1) return Infinity;
+    if (c > 1) return -Infinity;
+    return Math.acos(c) / rad / 360;
+  }
+
+  // Rising and setting around the solar noon of day number n (days from
+  // J2000.0), each refined once with the Sun's place at that moment.
+  function sunDay(n, place) {
+    let noon = 2451545 + n - place.lon / 360;
+    for (let i = 0; i < 2; i++) noon = 2451545 + n - place.lon / 360 - sunAt(noon).eqt;
+    const h = halfDay(noon, place.lat);
+    if (!Number.isFinite(h)) return { noon, polar: h > 0 ? "day" : "night" };
+    const rise = noon - halfDay(noon - h, place.lat);
+    const set = noon + halfDay(noon + h, place.lat);
+    return { noon, rise: Number.isFinite(rise) ? rise : noon - h, set: Number.isFinite(set) ? set : noon + h };
+  }
+
+  function latitude() {
+    try {
+      const v = parseFloat(localStorage.getItem("coc-latitude"));
+      return Number.isFinite(v) && v >= -90 && v <= 90 ? v : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // The reader's place if both numbers are set, otherwise Rome.
+  function place() {
+    const lat = latitude();
+    const lon = longitude();
+    return lat !== null && lon !== null ? { lat, lon, own: true } : { ...ROME, own: false };
+  }
+
+  // Which unequal hour holds jd: the last rising or setting before it, the
+  // next one after it, and so whether it is day or night.
+  function temporal(jd, where) {
+    const n = Math.round(jd - 2451545 + where.lon / 360);
+    const events = [];
+    let polar = null;
+    for (let k = -2; k <= 2; k++) {
+      const s = sunDay(n + k, where);
+      if (s.polar) { if (k === 0) polar = s.polar; continue; }
+      events.push([s.rise, "day"], [s.set, "night"]);
+    }
+    events.sort((a, b) => a[0] - b[0]);
+    let i = events.length - 1;
+    while (i >= 0 && events[i][0] > jd) i--;
+    const from = events[i];
+    const to = events[i + 1];
+    if (polar || !from || !to || from[1] === to[1]) return { polar: polar || "day" };
+    const len = (to[0] - from[0]) / 12;
+    const into = (jd - from[0]) / len;
+    return { half: from[1], hour: Math.floor(into) + 1, frac: into - Math.floor(into), len, start: from[0], end: to[0] };
+  }
+
+  function roman(n) {
+    return ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"][n - 1];
+  }
+
+  function minsec(days) {
+    const t = Math.round(days * 86400);
+    return `${Math.floor(t / 60)}m ${pad(t % 60)}s`;
+  }
+
   const jdOf = (d) => d.getTime() / 86400000 + 2440587.5;
   const dateOf = (jd) => new Date((jd - 2440587.5) * 86400000);
 
@@ -210,6 +298,26 @@
       }
       return { main: hms(st), sub: label, frac: st / 24, utc: true };
     },
+    temporal(d) {
+      const where = place();
+      const t = temporal(jdOf(d), where);
+      const at = where.own ? "your place" : "Rome";
+      if (t.polar) {
+        return {
+          main: t.polar === "day" ? "Sun up" : "Sun down",
+          sub: `no rising or setting today at ${at}`,
+          frac: 0,
+          utc: false,
+        };
+      }
+      return {
+        main: `${t.half === "day" ? "Day" : "Night"} hour ${roman(t.hour)}`,
+        sub: `an hour of ${minsec(t.len)}  ·  at ${at}`,
+        frac: t.frac,
+        utc: false,
+      };
+    },
+
     moon(d) {
       const m = lunation(jdOf(d));
       const age = jdOf(d) - m.last;
@@ -249,21 +357,47 @@
     setInterval(tick, 100);
   }
 
-  // Sidereal page: a longitude box, remembered in this browser only.
-  const lonInput = document.getElementById("longitude");
-  if (lonInput) {
-    const saved = longitude();
-    if (saved !== null) lonInput.value = saved;
-    lonInput.addEventListener("input", () => {
-      const v = parseFloat(lonInput.value);
+  // Place boxes (longitude on the sidereal page, latitude and longitude on
+  // the unequal-hours page), remembered in this browser only.
+  for (const input of document.querySelectorAll("input[data-store]")) {
+    const key = input.dataset.store;
+    const max = Number(input.max);
+    try {
+      const saved = parseFloat(localStorage.getItem(key));
+      if (Number.isFinite(saved)) input.value = saved;
+    } catch (e) { /* blocked */ }
+    input.addEventListener("input", () => {
+      const v = parseFloat(input.value);
       try {
-        if (lonInput.value.trim() === "") localStorage.removeItem("coc-longitude");
-        else if (Number.isFinite(v) && v >= -180 && v <= 180) localStorage.setItem("coc-longitude", String(v));
+        if (input.value.trim() === "") localStorage.removeItem(key);
+        else if (Number.isFinite(v) && Math.abs(v) <= max) localStorage.setItem(key, String(v));
       } catch (e) {
-        /* storage blocked: the clock just stays on Greenwich */
+        /* storage blocked: the clocks keep their defaults */
       }
       tick();
+      if (drawSun) drawSun();
     });
+  }
+
+  // Unequal-hours page: the day's sunrise and sunset, and the place used.
+  const sunFacts = document.getElementById("sun-facts");
+  const clockTime = (jd) => dateOf(jd).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  const drawSun = sunFacts && (() => {
+    const where = place();
+    const t = temporal(jdOf(new Date()), where);
+    const deg = (v, p, m) => `${Math.abs(v)}° ${v < 0 ? m : p}`;
+    const at = `${deg(where.lat, "N", "S")}, ${deg(where.lon, "E", "W")}${where.own ? "" : " (Rome)"}`;
+    let line;
+    if (t.polar) line = `The Sun ${t.polar === "day" ? "stays up" : "stays down"} all day at ${at}, so there are no unequal hours`;
+    else {
+      const other = t.half === "day" ? "Sunset" : "Sunrise";
+      line = `${t.half === "day" ? "Sunrise was" : "Sunset was"} ${clockTime(t.start)}, ${other.toLowerCase()} at ${clockTime(t.end)} by your clock  ·  ${at}`;
+    }
+    if (sunFacts.textContent !== line) sunFacts.textContent = line;
+  });
+  if (drawSun) {
+    drawSun();
+    setInterval(drawSun, 30000);
   }
 
   // Moon page: draw the lit part of the disc and name the next phases.
