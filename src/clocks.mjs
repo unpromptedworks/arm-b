@@ -162,4 +162,29 @@ export const clocks = [
       ["Phases of the Moon, 2026", "https://aa.usno.navy.mil/data/MoonPhases", "U.S. Naval Observatory, U.S. government work"],
     ],
   },
+  {
+    no: 9,
+    id: "temporal",
+    slug: "unequal-hours",
+    name: "Unequal hours",
+    basis: "sun",
+    teaser: "Twelve hours of daylight, however long the day.",
+    description:
+      "A live clock showing unequal, or temporal, hours: the daylight cut into twelve hours and the night into twelve, stretching and shrinking with the seasons.",
+    read: `
+      <p>From sunrise to sunset is always twelve hours, and from sunset to sunrise twelve more, so the length of an hour changes through the year and from place to place.<sup><a href="#s1">1</a></sup> The reading names the hour you are in, counted from sunrise for the day and from sunset for the night. The line under it says how long each of today’s hours lasts, and the bar fills as the current one passes.</p>
+      <p>The end of the sixth hour of the day is noon, whatever the season.<sup><a href="#s1">1</a></sup> Until you enter a latitude and longitude, the clock keeps the hours of Rome. Your numbers stay in your browser, and the longitude is shared with the sidereal clock. Inside the polar circles, on days when the Sun neither rises nor sets, there are no unequal hours to count, and the clock says so.</p>`,
+    history: `
+      <p>These are the hours of antiquity, called temporal, unequal or seasonal hours.<sup><a href="#s1">1</a></sup> The Egyptians divided the night into twelve; the Greeks divided the time from sunrise to sunset into twelve, at first leaving the night to three or four watches.<sup><a href="#s1">1</a></sup> The Romans numbered the hours of the day from <i>hora prima</i> to the twelfth, and in the Mediterranean an hour ran from about 45 minutes at the winter solstice to 75 at the summer one.<sup><a href="#s2">2</a></sup> This clock gives 45.6 and 76.1 minutes at Rome for the solstices of 2026.</p>
+      <p>The mechanical clock ended them in most of Europe. A clock that kept unequal hours had to have its period changed every morning and evening, and the mechanical clock furthered the adoption of equal hours instead.<sup><a href="#s1">1</a></sup> They survived elsewhere. Jewish law still reckons an hour as a twelfth of the time from sunrise to sunset.<sup><a href="#s1">1</a></sup> In Japan, clockmakers built clocks that divided day and night into six units each, of lengths that changed with the season, and the country kept them until it adopted Western timekeeping in 1873.<sup><a href="#s3">3</a></sup></p>
+      <p>The clock finds sunrise and sunset from the Naval Observatory’s approximate formulas for the Sun<sup><a href="#s5">5</a></sup> and the sunrise equation, taking the Sun as risen when its centre is 0.833° below the horizon, which allows for refraction and the width of the Sun’s disc.<sup><a href="#s4">4</a></sup> For Rome on 27 October 2026 it gives 05:36 and 16:11 UTC, the same minutes as the Observatory’s own tables.<sup><a href="#s6">6</a></sup></p>`,
+    sources: [
+      ["Hour", "https://en.wikipedia.org/wiki/Hour", "Wikipedia, CC BY-SA 4.0"],
+      ["Roman timekeeping", "https://en.wikipedia.org/wiki/Roman_timekeeping", "Wikipedia, CC BY-SA 4.0"],
+      ["Japanese clock", "https://en.wikipedia.org/wiki/Japanese_clock", "Wikipedia, CC BY-SA 4.0"],
+      ["Sunrise equation", "https://en.wikipedia.org/wiki/Sunrise_equation", "Wikipedia, CC BY-SA 4.0"],
+      ["Approximate Solar Coordinates", "https://aa.usno.navy.mil/faq/sun_approx", "U.S. Naval Observatory, U.S. government work"],
+      ["Sun and Moon Data for One Day", "https://aa.usno.navy.mil/data/RS_OneDay", "U.S. Naval Observatory, U.S. government work"],
+    ],
+  },
 ];
