@@ -173,7 +173,9 @@
 
   // Which unequal hour holds jd: the last rising or setting before it, the
   // next one after it, and so whether it is day or night.
-  function temporal(jd, where) {
+  // Risings ("day") and settings ("night") over the five days around jd,
+  // in order, and whether today has none.
+  function sunEvents(jd, where) {
     const n = Math.round(jd - 2451545 + where.lon / 360);
     const events = [];
     let polar = null;
@@ -183,6 +185,11 @@
       events.push([s.rise, "day"], [s.set, "night"]);
     }
     events.sort((a, b) => a[0] - b[0]);
+    return { events, polar };
+  }
+
+  function temporal(jd, where) {
+    const { events, polar } = sunEvents(jd, where);
     let i = events.length - 1;
     while (i >= 0 && events[i][0] > jd) i--;
     const from = events[i];
@@ -191,6 +198,16 @@
     const len = (to[0] - from[0]) / 12;
     const into = (jd - from[0]) / len;
     return { half: from[1], hour: Math.floor(into) + 1, frac: into - Math.floor(into), len, start: from[0], end: to[0] };
+  }
+
+  // Italian and Babylonian hours: equal hours counted from the last
+  // sunset and the last sunrise. Null if there was none in the last day.
+  function since(jd, where, kind) {
+    const { events, polar } = sunEvents(jd, where);
+    if (polar) return null;
+    let last = null;
+    for (const [t, k] of events) if (k === kind && t <= jd) last = t;
+    return last !== null && jd - last < 1.05 ? (jd - last) * 24 : null;
   }
 
   function roman(n) {
@@ -314,6 +331,24 @@
         main: `${t.half === "day" ? "Day" : "Night"} hour ${roman(t.hour)}`,
         sub: `an hour of ${minsec(t.len)}  ·  at ${at}`,
         frac: t.frac,
+        utc: false,
+      };
+    },
+
+    italian(d) {
+      const where = place();
+      const jd = jdOf(d);
+      const it = since(jd, where, "night");
+      const bab = since(jd, where, "day");
+      const at = where.own ? "your place" : "Rome";
+      if (it === null || bab === null) {
+        return { main: "No count", sub: `no rising or setting today at ${at}`, frac: 0, utc: false };
+      }
+      const hm = (h) => `${Math.floor(h)}:${pad(Math.floor((h * 60) % 60))}`;
+      return {
+        main: `${hm(it)}:${pad(Math.floor((it * 3600) % 60))}`,
+        sub: `hour ${Math.floor(it) + 1} from sunset  ·  Babylonian ${hm(bab)}  ·  ${at}`,
+        frac: it - Math.floor(it),
         utc: false,
       };
     },
