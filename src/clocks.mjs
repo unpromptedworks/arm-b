@@ -187,4 +187,29 @@ export const clocks = [
       ["Sun and Moon Data for One Day", "https://aa.usno.navy.mil/data/RS_OneDay", "U.S. Naval Observatory, U.S. government work"],
     ],
   },
+  {
+    no: 10,
+    id: "italian",
+    slug: "italian-hours",
+    name: "Italian and Babylonian hours",
+    basis: "sun",
+    teaser: "Twenty-four equal hours, counted from sunset.",
+    description:
+      "A live clock showing Italian hours, counted from the last sunset, and Babylonian hours, counted from the last sunrise: twenty-four equal hours that start again with the Sun.",
+    read: `
+      <p>The hours are the ordinary equal ones, sixty minutes each, but the count starts again every evening. The large reading is the Italian hour: the time since the last sunset, so that 0:00 is sunset and sunset falls again at the end of the twenty-fourth hour.<sup><a href="#s1">1</a></sup> The hours were numbered from 1 to 24, so a reading of 17:42 is in the eighteenth hour, as the line beneath says.<sup><a href="#s1">1</a></sup></p>
+      <p>The same line gives the Babylonian hour, the time since the last sunrise.<sup><a href="#s1">1</a></sup> The bar fills through the current Italian hour.</p>
+      <p>On this count noon moves through the year. At Rome the clock puts noon at about 19:25 at the winter solstice and about 16:25 at the summer one: an Italian clock told you, at a glance, how much daylight was left. Until you enter a latitude and longitude, the clock keeps the hours of Rome; your numbers stay in your browser and are shared with the unequal-hours and sidereal clocks. Where the Sun does not rise or set, there is nothing to count from, and the clock says so.</p>`,
+    history: `
+      <p>Italian hours were already in wide use in Italy by the fourteenth century.<sup><a href="#s1">1</a></sup> The first hour began with the sunset bell of the Angelus, or, by local custom, at the end of dusk about half an hour after sunset;<sup><a href="#s1">1</a></sup> this clock counts from sunset itself. The system was officially abolished in 1755, though some regions kept it into the middle of the nineteenth century, and it was used in Poland, Silesia and Bohemia, where it is called old Czech time, until the seventeenth.<sup><a href="#s1">1</a></sup></p>
+      <p>It is still written on some famous faces. The one-handed clock inside Florence Cathedral, with heads of prophets or evangelists painted by Paolo Uccello in 1443, shows the twenty-four hours of the <i>hora italica</i>, the day ending with sunset at the twenty-fourth.<sup><a href="#s2">2</a></sup> The clock of St Mark’s in Venice and the Prague Orloj have dials numbered 1 to 24 for the same count.<sup><a href="#s1">1</a></sup> The count lasted longest outside Europe: until 1968 Saudi Arabia counted twenty-four equal hours with the first starting at sunset.<sup><a href="#s1">1</a></sup></p>
+      <p>Babylonian hours are named after a mistake. Ancient authors believed the Babylonians counted twenty-four hours from sunrise; in fact they divided the day into twelve double hours, the <i>kaspu</i>, or into sixty parts.<sup><a href="#s1">1</a></sup></p>
+      <p>The clock finds sunset and sunrise the same way as the unequal-hours clock, from the Naval Observatory’s approximate formulas for the Sun<sup><a href="#s4">4</a></sup> and the sunrise equation, with the Sun’s centre 0.833° below the horizon.<sup><a href="#s3">3</a></sup> Because sunset comes a minute or so earlier or later each day, an Italian day is not exactly twenty-four hours long, and the count is set back to 0:00 at each sunset, as the keepers of these clocks had to reset theirs.</p>`,
+    sources: [
+      ["Hour", "https://en.wikipedia.org/wiki/Hour", "Wikipedia, CC BY-SA 4.0"],
+      ["Florence Cathedral", "https://en.wikipedia.org/wiki/Florence_Cathedral", "Wikipedia, CC BY-SA 4.0"],
+      ["Sunrise equation", "https://en.wikipedia.org/wiki/Sunrise_equation", "Wikipedia, CC BY-SA 4.0"],
+      ["Approximate Solar Coordinates", "https://aa.usno.navy.mil/faq/sun_approx", "U.S. Naval Observatory, U.S. government work"],
+    ],
+  },
 ];
