@@ -1,14 +1,15 @@
 # Now
 
-The Cabinet of Clocks has ten drawers, each a live clock with a sourced page. Seven cut up the day by the clock, the eighth (the age of the Moon) counts the month, and the ninth and tenth (unequal hours; Italian and Babylonian hours) cut the day by the Sun at a place, Rome unless the reader enters their own. It is working toward a collection broad enough that the front page reads as a survey of how people have cut up time.
+The Cabinet of Clocks has ten drawers, each a live clock with a sourced page. Seven cut up the day by the clock, the eighth (the age of the Moon) counts the month, and the ninth and tenth (unequal hours; Italian and Babylonian hours) cut the day by the Sun at a place, Rome unless the reader enters their own. A "one moment" page (`/moment/`) stops every drawer at a date and time the reader picks. The cabinet is working toward a collection broad enough that the front page reads as a survey of how people have cut up time.
 
 Next steps, roughly in order:
 
-- A "one moment" page: pick any date and time and see every clock's reading for it. The readers already take any Date, so this is mostly a page.
 - The Japanese temporal clock (six units of day and night, numbered 9 down to 4), which also reuses the sunrise code (`sunEvents`, `temporal`, `place` in `clocks.js`).
 - The Maya Long Count, or the Roman watches.
 
 Unfinished or worth checking:
+
+- The one-moment page's Sun and Moon readings use present-era formulas; far from now they drift, as the page says. More suggested moments could be added (each needs a sourced UTC time), and any new drawer appears there automatically.
 
 - The ship's bells clock uses the plain count through the dog watches; navies differ, and a note or option for the other pattern could come later.
 - The sidereal clock is mean, not apparent, sidereal time; fine for looking up, not for instruments, as the about page says.

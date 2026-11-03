@@ -41,7 +41,7 @@ function page({ path, title, description, body }) {
 <body>
 <header class="site"><div class="wrap">
 <a class="mark" href="/">Cabinet <span>of</span> Clocks</a>
-<nav><a href="/">The drawers</a> · <a href="/about/">About the cabinet</a></nav>
+<nav><a href="/">The drawers</a> · <a href="/moment/">One moment</a> · <a href="/about/">About the cabinet</a></nav>
 </div></header>
 <main>
 ${body}
@@ -82,7 +82,7 @@ write("/", page({
   body: `<div class="wrap">
 <section class="intro">
 <h1>Other ways to tell the time</h1>
-<p>Every drawer holds a working clock that cuts the day differently. They are all running now, all reading the same moment. Open one to learn how to read it and where it came from.</p>
+<p>Every drawer holds a working clock that cuts the day differently. They are all running now, all reading the same moment. Open one to learn how to read it and where it came from, or <a href="/moment/">stop them all at a moment of your choosing</a>.</p>
 </section>
 <ol class="cabinet">
 ${clocks.map((c) => `<li class="drawer"><a href="/clocks/${c.slug}/">
@@ -140,6 +140,57 @@ ${c.sources.map(([t, u, l], k) => `<li id="s${k + 1}">${u ? `<a href="${u}">${t}
   }));
 });
 
+// One moment: every clock stopped at a date and time the reader picks.
+const presets = [
+  ["1969-07-20T20:17:40Z", "Apollo 11 lands", 1],
+  ["1970-01-01T00:00:00Z", "Unix time 0", 2],
+  ["2001-09-09T01:46:40Z", "Unix time 1,000,000,000", 2],
+  ["2038-01-19T03:14:08Z", "The 32-bit overflow", 2],
+];
+write("/moment/", page({
+  path: "/moment/",
+  title: `One moment, every clock · ${NAME}`,
+  description: "Pick any date and time and read it on every clock in the cabinet at once: decimal hours, kè, ship’s bells, the Julian Day, the Moon’s age and more.",
+  body: `<div class="wrap">
+<section class="intro">
+<span class="label"><span class="no">Every drawer</span><span></span></span>
+<h1>One moment, every clock</h1>
+<p>Choose a date and time, and every clock in the cabinet stops there. The same instant, read ${clocks.length} ways.</p>
+</section>
+<form class="moment" id="moment-form" onsubmit="return false">
+<div class="control">
+<label for="moment">Date and time</label>
+<input id="moment" type="datetime-local" step="1" min="0001-01-01T00:00:00" max="9999-12-31T23:59:59">
+<label class="check"><input id="moment-utc" type="checkbox"> as UTC</label>
+<button type="button" class="bell" id="moment-now">Back to now</button>
+</div>
+<p class="moment-said" id="moment-said" aria-live="polite">Showing the present moment, live.</p>
+<div class="control presets">
+<span>Or try:</span>
+${presets.map(([at, name]) => `<button type="button" class="bell small" data-at="${at}">${name}</button>`).join("\n")}
+</div>
+</form>
+<ol class="cabinet moment-grid">
+${clocks.map((c) => `<li class="drawer"><a href="/clocks/${c.slug}/">
+<span class="label"><span class="no">${no(c.no)}</span><span>${basis(c)}</span></span>
+<h2>${c.name}</h2>
+${dial(c, false)}
+</a></li>`).join("\n")}
+</ol>
+<section class="narrow notes">
+<h2>Reading the moment</h2>
+<p>The time you enter is read in your own time zone unless you tick “as UTC”. Clocks marked “your local day” then count from your local midnight on that date, so the same instant gives different readings in different places, as it would have if you had been standing there with this cabinet.</p>
+<p>The Sun clocks use the latitude and longitude you saved on their pages, or Rome if you saved none. The sidereal clock, the Moon and the Sun use approximate formulas made for the present era, and drift the further you go from it. Your local time for a past date follows your browser’s time-zone rules, and dates follow the Gregorian calendar even before it existed, as the Julian Day and Unix time do. No clock here counts leap seconds.</p>
+<p>The address of the page changes to hold the moment you chose, so you can return to it.</p>
+<h2>Sources for the suggestions</h2>
+<ol class="sources">
+<li id="s1"><a href="https://en.wikipedia.org/wiki/Apollo_11">Apollo 11</a> <span class="lic">(Wikipedia, CC BY-SA 4.0)</span>: the lunar module landed at 20:17:40 UTC on 20 July 1969.</li>
+<li id="s2"><a href="https://en.wikipedia.org/wiki/Unix_time">Unix time</a> <span class="lic">(Wikipedia, CC BY-SA 4.0)</span>: the epoch, the billionth second and the 2038 overflow.</li>
+</ol>
+</section>
+</div>`,
+}));
+
 // About the cabinet.
 write("/about/", page({
   path: "/about/",
@@ -149,7 +200,7 @@ write("/about/", page({
 <span class="label"><span class="no">Colophon</span><span></span></span>
 <h1>About the cabinet</h1>
 <p>The Cabinet of Clocks is a small collection of timekeeping systems, kept running. Some were law for a few months, some lasted two thousand years, and one is ticking inside the device you are reading this on. Each has a drawer: a live clock, a note on how to read it, and a short history with its sources.</p>
-<p>New drawers are added over time.</p>
+<p>New drawers are added over time. <a href="/moment/">One moment, every clock</a> stops them all at a date and time you choose.</p>
 <h2>How the clocks work</h2>
 <p>Every clock is computed in your browser from your computer’s clock, ten times a second. Clocks marked “your local day” divide the day from your local midnight; clocks marked “Universal” work from Universal Time. None of them is more accurate than the clock they start from. The sidereal clock uses an approximate formula good for everyday looking, not for pointing a telescope, the moon clock places the new and full moons to within about twenty minutes, and the unequal-hours and Italian-hours clocks place sunrise and sunset to within a minute or two.</p>
 <p>The site sends nothing and fetches nothing from elsewhere. It remembers only a few things, all stored in your own browser: a latitude and longitude you type on the sidereal, unequal-hours or Italian-hours page, and which hemisphere you choose on the moon page.</p>
