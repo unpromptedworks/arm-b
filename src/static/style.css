@@ -235,3 +235,36 @@ figure.moon svg { display: block; width: 100%; height: auto; }
 .moon-lit { fill: var(--brass); }
 .moon-rim { fill: none; stroke: var(--muted); stroke-width: 0.6; }
 #moon-facts { white-space: normal; }
+
+/* One-moment page: the picker, and notes under the stopped drawers. */
+form.moment {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.25rem 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+.control input[type="datetime-local"] { width: auto; max-width: 100%; }
+.control label.check { display: inline-flex; gap: 0.35rem; align-items: center; }
+.control label.check input { width: auto; }
+.moment-said {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0.9rem 0 0;
+}
+.presets { font-size: 0.9rem; color: var(--muted); }
+button.bell.small { font-size: 0.85rem; padding: 0.3rem 0.8rem; }
+.notes { padding: 0; margin: 0 0 1rem; }
+.notes h2 {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: normal;
+  margin: 2rem 0 0.25rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1rem;
+}
+.notes p { font-size: 0.95rem; }

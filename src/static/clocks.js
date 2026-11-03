@@ -376,8 +376,13 @@
     plain: el.querySelector(".dial-plain"),
   })).filter((x) => x.read);
 
+  // The moment every dial reads: the present, or a fixed Date chosen on
+  // the "one moment" page.
+  let fixed = null;
+  const current = () => (fixed ? new Date(fixed.getTime()) : new Date());
+
   function tick() {
-    const now = new Date();
+    const now = current();
     for (const x of dials) {
       const r = x.read(now);
       if (x.main.textContent !== r.main) x.main.textContent = r.main;
@@ -419,7 +424,7 @@
   const clockTime = (jd) => dateOf(jd).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
   const drawSun = sunFacts && (() => {
     const where = place();
-    const t = temporal(jdOf(new Date()), where);
+    const t = temporal(jdOf(current()), where);
     const deg = (v, p, m) => `${Math.abs(v)}° ${v < 0 ? m : p}`;
     const at = `${deg(where.lat, "N", "S")}, ${deg(where.lon, "E", "W")}${where.own ? "" : " (Rome)"}`;
     let line;
@@ -447,7 +452,7 @@
     try { south = localStorage.getItem("coc-south") === "1"; } catch (e) { /* blocked */ }
     const when = (jd) => dateOf(jd).toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
     const drawMoon = () => {
-      const m = lunation(jdOf(new Date()));
+      const m = lunation(jdOf(current()));
       const r = 50;
       const rx = (r * Math.abs(Math.cos(m.e * rad))).toFixed(2);
       const waxing = m.e < 180;
@@ -471,6 +476,69 @@
         drawMoon();
       });
     }
+  }
+
+  // One-moment page: stop every dial at a chosen date and time. The
+  // moment is kept in the address (#2026-11-03T06:00:00Z) so it can be
+  // returned to; nothing is stored or sent.
+  const momentInput = document.getElementById("moment");
+  if (momentInput) {
+    const utcBox = document.getElementById("moment-utc");
+    const said = document.getElementById("moment-said");
+    const nowButton = document.getElementById("moment-now");
+    const fields = (d, utc) => {
+      const g = (k) => d[(utc ? "getUTC" : "get") + k]();
+      return `${pad(g("FullYear"), 4)}-${pad(g("Month") + 1)}-${pad(g("Date"))}T${pad(g("Hours"))}:${pad(g("Minutes"))}:${pad(g("Seconds"))}`;
+    };
+    const long = { weekday: "short", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" };
+    const show = () => {
+      if (!fixed) {
+        said.textContent = "Showing the present moment, live.";
+        return;
+      }
+      const u = fixed.toLocaleString("en-GB", { ...long, timeZone: "UTC" });
+      const l = fixed.toLocaleString("en-GB", long);
+      said.textContent = u === l ? `Stopped at ${u}, UTC and your time.` : `Stopped at ${l} your time, which is ${u} UTC.`;
+    };
+    const setHash = (h) => {
+      try { history.replaceState(null, "", h ? "#" + h : location.pathname); } catch (e) { /* ignore */ }
+    };
+    const fix = (d, keepInput) => {
+      if (!d || Number.isNaN(d.getTime())) return;
+      fixed = d;
+      if (!keepInput) momentInput.value = fields(d, utcBox.checked);
+      setHash(fields(d, true) + "Z");
+      show();
+      tick();
+    };
+    const fromInput = () => {
+      const v = momentInput.value;
+      if (!v) return;
+      const full = v.length === 16 ? v + ":00" : v;
+      const d = new Date(full + (utcBox.checked ? "Z" : ""));
+      fix(d, true);
+    };
+    momentInput.addEventListener("change", fromInput);
+    momentInput.addEventListener("input", fromInput);
+    utcBox.addEventListener("change", () => {
+      if (fixed) momentInput.value = fields(fixed, utcBox.checked);
+    });
+    nowButton.addEventListener("click", () => {
+      fixed = null;
+      momentInput.value = "";
+      setHash("");
+      show();
+      tick();
+    });
+    for (const b of document.querySelectorAll("button[data-at]")) {
+      b.addEventListener("click", () => fix(new Date(b.dataset.at)));
+    }
+    const fromHash = () => {
+      const h = decodeURIComponent(location.hash.slice(1));
+      if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?Z$/.test(h)) fix(new Date(h));
+    };
+    window.addEventListener("hashchange", fromHash);
+    fromHash();
   }
 
   // Ship's bells page: strike the current count with Web Audio.
