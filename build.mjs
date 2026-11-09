@@ -103,8 +103,8 @@ clocks.forEach((c, i) => {
   if (c.id === "sidereal") {
     extra = `<div class="control"><label for="longitude">Your longitude, degrees east</label><input id="longitude" data-store="coc-longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" placeholder="e.g. -0.13"></div>`;
   }
-  if (c.id === "temporal" || c.id === "italian") {
-    extra = `<span class="dial-sub" id="sun-facts"></span>
+  if (c.id === "temporal" || c.id === "italian" || c.id === "japanese") {
+    extra = `<span class="dial-sub" id="sun-facts"${c.id === "japanese" ? ' data-place="tokyo"' : ""}></span>
 <div class="control"><label for="latitude">Latitude, ° north</label><input id="latitude" data-store="coc-latitude" type="number" inputmode="decimal" min="-90" max="90" step="any" placeholder="e.g. 51.5"></div>
 <div class="control"><label for="longitude">Longitude, ° east</label><input id="longitude" data-store="coc-longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" placeholder="e.g. -0.13"></div>`;
   }
@@ -180,7 +180,7 @@ ${dial(c, false)}
 <section class="narrow notes">
 <h2>Reading the moment</h2>
 <p>The time you enter is read in your own time zone unless you tick “as UTC”. Clocks marked “your local day” then count from your local midnight on that date, so the same instant gives different readings in different places, as it would have if you had been standing there with this cabinet.</p>
-<p>The Sun clocks use the latitude and longitude you saved on their pages, or Rome if you saved none. The sidereal clock, the Moon and the Sun use approximate formulas made for the present era, and drift the further you go from it. Your local time for a past date follows your browser’s time-zone rules, and dates follow the Gregorian calendar even before it existed, as the Julian Day and Unix time do. No clock here counts leap seconds.</p>
+<p>The Sun clocks use the latitude and longitude you saved on their pages, or Rome if you saved none (Tokyo for the Japanese clock). The sidereal clock, the Moon and the Sun use approximate formulas made for the present era, and drift the further you go from it. Your local time for a past date follows your browser’s time-zone rules, and dates follow the Gregorian calendar even before it existed, as the Julian Day and Unix time do. No clock here counts leap seconds.</p>
 <p>The address of the page changes to hold the moment you chose, so you can return to it.</p>
 <h2>Sources for the suggestions</h2>
 <ol class="sources">
@@ -202,8 +202,8 @@ write("/about/", page({
 <p>The Cabinet of Clocks is a small collection of timekeeping systems, kept running. Some were law for a few months, some lasted two thousand years, and one is ticking inside the device you are reading this on. Each has a drawer: a live clock, a note on how to read it, and a short history with its sources.</p>
 <p>New drawers are added over time. <a href="/moment/">One moment, every clock</a> stops them all at a date and time you choose.</p>
 <h2>How the clocks work</h2>
-<p>Every clock is computed in your browser from your computer’s clock, ten times a second. Clocks marked “your local day” divide the day from your local midnight; clocks marked “Universal” work from Universal Time. None of them is more accurate than the clock they start from. The sidereal clock uses an approximate formula good for everyday looking, not for pointing a telescope, the moon clock places the new and full moons to within about twenty minutes, and the unequal-hours and Italian-hours clocks place sunrise and sunset to within a minute or two.</p>
-<p>The site sends nothing and fetches nothing from elsewhere. It remembers only a few things, all stored in your own browser: a latitude and longitude you type on the sidereal, unequal-hours or Italian-hours page, and which hemisphere you choose on the moon page.</p>
+<p>Every clock is computed in your browser from your computer’s clock, ten times a second. Clocks marked “your local day” divide the day from your local midnight; clocks marked “Universal” work from Universal Time. None of them is more accurate than the clock they start from. The sidereal clock uses an approximate formula good for everyday looking, not for pointing a telescope, the moon clock places the new and full moons to within about twenty minutes, and the three Sun clocks (unequal, Italian and Japanese hours) place sunrise and sunset to within a minute or two.</p>
+<p>The site sends nothing and fetches nothing from elsewhere. It remembers only a few things, all stored in your own browser: a latitude and longitude you type on the sidereal page or one of the Sun-clock pages, and which hemisphere you choose on the moon page.</p>
 <h2>Sources and credits</h2>
 <p>Facts are drawn from the sources listed on each clock’s page, mostly Wikipedia articles under the Creative Commons Attribution-ShareAlike 4.0 licence, the U.S. Naval Observatory, and, for the Moon’s mean motions, Jean Meeus’s book <cite>Astronomical Algorithms</cite>. The type is your system’s own. The code and words were written for this site.</p>
 <p>This site was made by an AI, as part of an experiment: <a href="${ABOUT}">about the experiment</a>.</p>

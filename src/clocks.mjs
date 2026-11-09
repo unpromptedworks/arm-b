@@ -176,7 +176,7 @@ export const clocks = [
       <p>The end of the sixth hour of the day is noon, whatever the season.<sup><a href="#s1">1</a></sup> Until you enter a latitude and longitude, the clock keeps the hours of Rome. Your numbers stay in your browser, and the longitude is shared with the sidereal clock. Inside the polar circles, on days when the Sun neither rises nor sets, there are no unequal hours to count, and the clock says so.</p>`,
     history: `
       <p>These are the hours of antiquity, called temporal, unequal or seasonal hours.<sup><a href="#s1">1</a></sup> The Egyptians divided the night into twelve; the Greeks divided the time from sunrise to sunset into twelve, at first leaving the night to three or four watches.<sup><a href="#s1">1</a></sup> The Romans numbered the hours of the day from <i>hora prima</i> to the twelfth, and in the Mediterranean an hour ran from about 45 minutes at the winter solstice to 75 at the summer one.<sup><a href="#s2">2</a></sup> This clock gives 45.6 and 76.1 minutes at Rome for the solstices of 2026.</p>
-      <p>The mechanical clock ended them in most of Europe. A clock that kept unequal hours had to have its period changed every morning and evening, and the mechanical clock furthered the adoption of equal hours instead.<sup><a href="#s1">1</a></sup> They survived elsewhere. Jewish law still reckons an hour as a twelfth of the time from sunrise to sunset.<sup><a href="#s1">1</a></sup> In Japan, clockmakers built clocks that divided day and night into six units each, of lengths that changed with the season, and the country kept them until it adopted Western timekeeping in 1873.<sup><a href="#s3">3</a></sup></p>
+      <p>The mechanical clock ended them in most of Europe. A clock that kept unequal hours had to have its period changed every morning and evening, and the mechanical clock furthered the adoption of equal hours instead.<sup><a href="#s1">1</a></sup> They survived elsewhere. Jewish law still reckons an hour as a twelfth of the time from sunrise to sunset.<sup><a href="#s1">1</a></sup> In Japan, clockmakers built clocks that divided day and night into six units each, of lengths that changed with the season, and the country kept them until it adopted Western timekeeping in 1873.<sup><a href="#s3">3</a></sup> Drawer <a href="/clocks/japanese-hours/">No. 11</a> keeps those hours.</p>
       <p>The clock finds sunrise and sunset from the Naval Observatory’s approximate formulas for the Sun<sup><a href="#s5">5</a></sup> and the sunrise equation, taking the Sun as risen when its centre is 0.833° below the horizon, which allows for refraction and the width of the Sun’s disc.<sup><a href="#s4">4</a></sup> For Rome on 27 October 2026 it gives 05:36 and 16:11 UTC, the same minutes as the Observatory’s own tables.<sup><a href="#s6">6</a></sup></p>`,
     sources: [
       ["Hour", "https://en.wikipedia.org/wiki/Hour", "Wikipedia, CC BY-SA 4.0"],
@@ -210,6 +210,30 @@ export const clocks = [
       ["Florence Cathedral", "https://en.wikipedia.org/wiki/Florence_Cathedral", "Wikipedia, CC BY-SA 4.0"],
       ["Sunrise equation", "https://en.wikipedia.org/wiki/Sunrise_equation", "Wikipedia, CC BY-SA 4.0"],
       ["Approximate Solar Coordinates", "https://aa.usno.navy.mil/faq/sun_approx", "U.S. Naval Observatory, U.S. government work"],
+    ],
+  },
+  {
+    no: 11,
+    id: "japanese",
+    slug: "japanese-hours",
+    name: "Japanese temporal hours",
+    basis: "sun",
+    teaser: "Six hours of day and six of night, counted down from nine.",
+    description:
+      "A live clock showing traditional Japanese time: six hours from sunrise to sunset and six from sunset to sunrise, numbered 6, 5, 4, 9, 8, 7 and named for the animals of the zodiac.",
+    read: `
+      <p>Day and night each have six hours, the day from sunrise to sunset and the night from sunset to sunrise, so the hours of a summer day are long and those of a winter day short, with the opposite at night.<sup><a href="#s1">1</a></sup> The reading gives the hour’s number and its animal. Starting at dawn, the six day hours are Six (Rabbit), Five (Dragon), Four (Snake), Nine (Horse), Eight (Goat) and Seven (Monkey); from dusk, the night hours are Six (Rooster), Five (Dog), Four (Pig), Nine (Rat), Eight (Ox) and Seven (Tiger).<sup><a href="#s1">1</a></sup> Nine of the day begins when the Sun is highest, and Nine of the night halfway through the dark; in Tokyo, east of Japan’s time-zone meridian, both come about half an hour before 12 by the ordinary clock, at around 11:25.<sup><a href="#s5">5</a></sup></p>
+      <p>The line beneath says whether it is an hour of the day or of the night, then gives the animal’s character and which quarter of the hour you are in, so that 子 3/4 is the third quarter of the hour of the Rat; an hour could be split in four, as Rat one, two, three and four.<sup><a href="#s2">2</a></sup> Then comes the length of each of today’s hours, and the bar fills as the current one passes. Until you enter a latitude and longitude, the clock keeps the hours of Tokyo. Your numbers stay in your browser and are shared with the other Sun clocks and the sidereal clock.</p>`,
+    history: `
+      <p>From about the Muromachi period, Japan divided the time between sunrise and sunset, or between dawn and dusk, into six equal parts, and the night likewise.<sup><a href="#s2">2</a></sup> The numbers come from the bell. In Chinese yin–yang thought nine was the most auspicious number, so at noon the bell struck nine; the next hours took the multiples of nine, 18, 27, 36, 45 and 54, and dropped the tens, leaving 8, 7, 6, 5 and 4.<sup><a href="#s2">2</a></sup> One, two and three strokes were never used for hours, because those were the strokes Buddhists used to call to prayer.<sup><a href="#s1">1</a></sup> Since every number came round twice a day, the Six at dawn and the Six at dusk were told apart as <i>ake-mutsu</i> and <i>kure-mutsu</i>, the dawn six and the evening six.<sup><a href="#s2">2</a></sup></p>
+      <p>Mechanical clocks came with the missionaries: Francis Xavier gave one to the lord Ōuchi Yoshitaka in 1551.<sup><a href="#s1">1</a></sup> A European clock keeps equal hours, so Japanese makers changed it. Through the Edo period (1603–1868) they built clocks, now called <i>wadokei</i>, with two foliot balances, one slow and one fast, to run at one rate by day and another by night, and others whose hour markers could be moved around the dial with the seasons.<sup><a href="#s1">1</a></sup> In 1873 the government adopted Western timekeeping, with equal hours that do not change with the seasons.<sup><a href="#s1">1</a></sup></p>
+      <p>This clock starts the day at sunrise and the night at sunset, which it finds as the unequal-hours clock does, from the Naval Observatory’s approximate formulas for the Sun<sup><a href="#s4">4</a></sup> and the sunrise equation.<sup><a href="#s3">3</a></sup> For Tokyo on 9 November 2026 it gives sunrise at 06:10 and sunset at 16:39 Japan time, the same minutes as the Observatory’s own tables;<sup><a href="#s5">5</a></sup> that day’s hours are 1 hour 45 minutes by day and 2 hours 15 minutes by night. At the June solstice of 2026 a day hour in Tokyo lasts about 2 hours 26 minutes, and at the December one about 1 hour 37 minutes.</p>`,
+    sources: [
+      ["Japanese clock", "https://en.wikipedia.org/wiki/Japanese_clock", "Wikipedia, CC BY-SA 4.0"],
+      ["不定時法 (Temporal hours)", "https://ja.wikipedia.org/wiki/%E4%B8%8D%E5%AE%9A%E6%99%82%E6%B3%95", "Japanese Wikipedia, CC BY-SA 4.0"],
+      ["Sunrise equation", "https://en.wikipedia.org/wiki/Sunrise_equation", "Wikipedia, CC BY-SA 4.0"],
+      ["Approximate Solar Coordinates", "https://aa.usno.navy.mil/faq/sun_approx", "U.S. Naval Observatory, U.S. government work"],
+      ["Sun and Moon Data for One Day", "https://aa.usno.navy.mil/data/RS_OneDay", "U.S. Naval Observatory, U.S. government work"],
     ],
   },
 ];
