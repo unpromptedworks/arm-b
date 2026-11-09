@@ -120,7 +120,8 @@
   // from the sunrise equation with the Sun's centre 0.833° below the
   // horizon, for refraction and the Sun's half-width (Wikipedia, "Sunrise
   // equation"). Good to a minute or two away from the polar circles.
-  const ROME = { lat: 41.9, lon: 12.5 };
+  const ROME = { lat: 41.9, lon: 12.5, name: "Rome" };
+  const TOKYO = { lat: 35.68, lon: 139.77, name: "Tokyo" };
   const cos = (x) => Math.cos(x * rad);
 
   function sunAt(jd) {
@@ -164,11 +165,12 @@
     }
   }
 
-  // The reader's place if both numbers are set, otherwise Rome.
-  function place() {
+  // The reader's place if both numbers are set, otherwise the clock's own
+  // default (Rome, or Tokyo for the Japanese clock).
+  function place(def = ROME) {
     const lat = latitude();
     const lon = longitude();
-    return lat !== null && lon !== null ? { lat, lon, own: true } : { ...ROME, own: false };
+    return lat !== null && lon !== null ? { lat, lon, own: true } : { ...def, own: false };
   }
 
   // Which unequal hour holds jd: the last rising or setting before it, the
@@ -188,14 +190,15 @@
     return { events, polar };
   }
 
-  function temporal(jd, where) {
+  // parts: 12 for the unequal hours of antiquity, 6 for the Japanese clock.
+  function temporal(jd, where, parts = 12) {
     const { events, polar } = sunEvents(jd, where);
     let i = events.length - 1;
     while (i >= 0 && events[i][0] > jd) i--;
     const from = events[i];
     const to = events[i + 1];
     if (polar || !from || !to || from[1] === to[1]) return { polar: polar || "day" };
-    const len = (to[0] - from[0]) / 12;
+    const len = (to[0] - from[0]) / parts;
     const into = (jd - from[0]) / len;
     return { half: from[1], hour: Math.floor(into) + 1, frac: into - Math.floor(into), len, start: from[0], end: to[0] };
   }
@@ -212,6 +215,20 @@
 
   function roman(n) {
     return ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"][n - 1];
+  }
+
+  // Japanese temporal hours: six of day from sunrise, six of night from
+  // sunset, numbered 6 5 4 9 8 7 and named for the zodiac (Wikipedia,
+  // "Japanese clock"; ja.wikipedia, "不定時法").
+  const JP_NUM = [6, 5, 4, 9, 8, 7];
+  const JP_SIGN = {
+    day: [["Rabbit", "卯"], ["Dragon", "辰"], ["Snake", "巳"], ["Horse", "午"], ["Goat", "未"], ["Monkey", "申"]],
+    night: [["Rooster", "酉"], ["Dog", "戌"], ["Pig", "亥"], ["Rat", "子"], ["Ox", "丑"], ["Tiger", "寅"]],
+  };
+
+  function hourmin(days) {
+    const t = Math.round(days * 1440);
+    return `${Math.floor(t / 60)}h ${pad(t % 60)}m`;
   }
 
   function minsec(days) {
@@ -353,6 +370,28 @@
       };
     },
 
+    japanese(d) {
+      const where = place(TOKYO);
+      const t = temporal(jdOf(d), where, 6);
+      const at = where.own ? "your place" : "Tokyo";
+      if (t.polar) {
+        return {
+          main: t.polar === "day" ? "Sun up" : "Sun down",
+          sub: `no rising or setting today at ${at}`,
+          frac: 0,
+          utc: false,
+        };
+      }
+      const [sign, char] = JP_SIGN[t.half][t.hour - 1];
+      const part = Math.floor(t.frac * 4) + 1;
+      return {
+        main: `${JP_NUM[t.hour - 1]} · ${sign}`,
+        sub: `${t.half}  ·  ${char} ${part}/4  ·  ${hourmin(t.len)} each  ·  ${at}`,
+        frac: t.frac,
+        utc: false,
+      };
+    },
+
     moon(d) {
       const m = lunation(jdOf(d));
       const age = jdOf(d) - m.last;
@@ -421,14 +460,16 @@
 
   // Unequal-hours page: the day's sunrise and sunset, and the place used.
   const sunFacts = document.getElementById("sun-facts");
-  const clockTime = (jd) => dateOf(jd).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  // Add half a minute so the shown minute is rounded, not truncated.
+  const clockTime = (jd) => dateOf(jd + 30 / 86400).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  const japan = sunFacts && sunFacts.dataset.place === "tokyo";
   const drawSun = sunFacts && (() => {
-    const where = place();
-    const t = temporal(jdOf(current()), where);
+    const where = place(japan ? TOKYO : ROME);
+    const t = temporal(jdOf(current()), where, japan ? 6 : 12);
     const deg = (v, p, m) => `${Math.abs(v)}° ${v < 0 ? m : p}`;
-    const at = `${deg(where.lat, "N", "S")}, ${deg(where.lon, "E", "W")}${where.own ? "" : " (Rome)"}`;
+    const at = `${deg(where.lat, "N", "S")}, ${deg(where.lon, "E", "W")}${where.own ? "" : ` (${where.name})`}`;
     let line;
-    if (t.polar) line = `The Sun ${t.polar === "day" ? "stays up" : "stays down"} all day at ${at}, so there are no unequal hours`;
+    if (t.polar) line = `The Sun ${t.polar === "day" ? "stays up" : "stays down"} all day at ${at}, so there are no ${japan ? "Japanese" : "unequal"} hours`;
     else {
       const other = t.half === "day" ? "Sunset" : "Sunrise";
       line = `${t.half === "day" ? "Sunrise was" : "Sunset was"} ${clockTime(t.start)}, ${other.toLowerCase()} at ${clockTime(t.end)} by your clock  ·  ${at}`;
