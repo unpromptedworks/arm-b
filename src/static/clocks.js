@@ -237,6 +237,42 @@
   }
 
   const jdOf = (d) => d.getTime() / 86400000 + 2440587.5;
+
+  // The Maya Long Count. Days since 13.0.0.0.0, 4 Ajaw 8 Kumk'u, taken as
+  // Julian Day Number 584283 (the GMT correlation), counted by the reader's
+  // local date. Names from Wikipedia, "Maya calendar".
+  const GMT = 584283;
+  const TZ_NAMES = ["Imix", "Ik’", "Ak’b’al", "K’an", "Chikchan", "Kimi", "Manik’", "Lamat", "Muluk", "Ok",
+    "Chuwen", "Eb’", "B’en", "Ix", "Men", "K’ib’", "Kab’an", "Etz’nab’", "Kawak", "Ajaw"];
+  const HAAB_NAMES = ["Pop", "Wo’", "Sip", "Sotz’", "Sek", "Xul", "Yaxk’in", "Mol", "Ch’en", "Yax",
+    "Sak", "Keh", "Mak", "K’ank’in", "Muwan", "Pax", "K’ayab", "Kumk’u", "Wayeb’"];
+  const PLACES = [["b’ak’tun", 144000], ["k’atun", 7200], ["tun", 360], ["winal", 20], ["k’in", 1]];
+  const mod = (a, n) => ((a % n) + n) % n;
+
+  // Days since the start of the count, for the local calendar date of d.
+  function mayaDays(d) {
+    const u = new Date(0);
+    u.setUTCFullYear(d.getFullYear(), d.getMonth(), d.getDate());
+    return Math.round(u.getTime() / 86400000) + 2440588 - GMT;
+  }
+
+  function longCount(n) {
+    const out = [];
+    let left = n;
+    for (const [, size] of PLACES) {
+      const v = Math.floor(left / size);
+      out.push(v);
+      left -= v * size;
+    }
+    return out;
+  }
+
+  function calendarRound(n) {
+    const tz = `${mod(n + 3, 13) + 1} ${TZ_NAMES[mod(n + 19, 20)]}`;
+    const h = mod(n + 348, 365); // 8 Kumk'u is day 348 of the haab'
+    return { tz, haab: `${h % 20} ${HAAB_NAMES[Math.floor(h / 20)]}` };
+  }
+
   const dateOf = (jd) => new Date((jd - 2440587.5) * 86400000);
 
   const readers = {
@@ -392,6 +428,19 @@
       };
     },
 
+    maya(d) {
+      const n = mayaDays(d);
+      const frac = localSeconds(d) / DAY;
+      if (n < 0) return { main: "Before 13.0.0.0.0", sub: "the count had not begun", frac, utc: false };
+      const { tz, haab } = calendarRound(n);
+      return {
+        main: longCount(n).join("."),
+        sub: `${tz}  ·  ${haab}  ·  day ${n.toLocaleString("en")}`,
+        frac,
+        utc: false,
+      };
+    },
+
     moon(d) {
       const m = lunation(jdOf(d));
       const age = jdOf(d) - m.last;
@@ -479,6 +528,45 @@
   if (drawSun) {
     drawSun();
     setInterval(drawSun, 30000);
+  }
+
+  // Maya page: the count drawn in bar-and-dot numerals, highest place at
+  // the top as on the monuments: a dot is one, a bar five, a shell zero.
+  const glyphs = document.getElementById("maya-glyphs");
+  if (glyphs) {
+    const numeral = (v) => {
+      if (v === 0) {
+        return '<svg viewBox="0 0 60 40" aria-hidden="true"><ellipse class="g-shell" cx="30" cy="20" rx="24" ry="12"/>' +
+          '<path class="g-line" d="M14 18 Q30 10 46 18 M14 24 Q30 30 46 24"/></svg>';
+      }
+      const bars = Math.floor(v / 5);
+      const dots = v % 5;
+      const h = (dots ? 12 : 0) + bars * 12 + 4;
+      let g = "";
+      let y = 4;
+      if (dots) {
+        const gap = 11;
+        const x0 = 30 - ((dots - 1) * gap) / 2;
+        for (let i = 0; i < dots; i++) g += `<circle class="g-mark" cx="${x0 + i * gap}" cy="${y + 4}" r="4"/>`;
+        y += 12;
+      }
+      for (let i = 0; i < bars; i++) { g += `<rect class="g-mark" x="6" y="${y}" width="48" height="8" rx="2"/>`; y += 12; }
+      return `<svg viewBox="0 0 60 ${h}" aria-hidden="true">${g}</svg>`;
+    };
+    let shown = null;
+    const drawGlyphs = () => {
+      const n = mayaDays(current());
+      if (n === shown) return;
+      shown = n;
+      if (n < 0) { glyphs.innerHTML = ""; return; }
+      const lc = longCount(n);
+      glyphs.innerHTML = PLACES.map(([name, size], i) =>
+        `<li><span class="g-num">${numeral(lc[i] % 20)}</span><span class="g-val">${lc[i]}</span>` +
+        `<span class="g-name">${name}<small>${size.toLocaleString("en")} day${size === 1 ? "" : "s"}</small></span></li>`).join("");
+      glyphs.setAttribute("aria-label", `${lc.join(".")}: ` + PLACES.map(([name], i) => `${lc[i]} ${name}`).join(", "));
+    };
+    drawGlyphs();
+    setInterval(drawGlyphs, 1000);
   }
 
   // Moon page: draw the lit part of the disc and name the next phases.

@@ -1,13 +1,15 @@
 # Now
 
-The Cabinet of Clocks has eleven drawers, each a live clock with a sourced page. Seven cut up the day by the clock, the eighth (the age of the Moon) counts the month, and the ninth to eleventh (unequal hours; Italian and Babylonian hours; Japanese temporal hours) cut the day by the Sun at a place, Rome (Tokyo for the Japanese clock) unless the reader enters their own. A "one moment" page (`/moment/`) stops every drawer at a date and time the reader picks. The cabinet is working toward a collection broad enough that the front page reads as a survey of how people have cut up time.
+The Cabinet of Clocks has twelve drawers, each a live clock with a sourced page. Seven cut up the day by the clock, the eighth (the age of the Moon) counts the month, and the ninth to eleventh (unequal hours; Italian and Babylonian hours; Japanese temporal hours) cut the day by the Sun at a place, Rome (Tokyo for the Japanese clock) unless the reader enters their own. The twelfth, the Maya Long Count, counts days since 3114 BC, with the tzolk'in and haab' and the count drawn in bar-and-dot numerals. A "one moment" page (`/moment/`) stops every drawer at a date and time the reader picks. The cabinet is working toward a collection broad enough that the front page reads as a survey of how people have cut up time.
 
 Next steps, roughly in order:
 
-- The Maya Long Count, or the Roman watches (the night in four watches, which would complete the unequal-hours story).
+- The Roman watches (the night in four watches, which would complete the unequal-hours story).
 - A printable face, or a comparison view of one day laid out as bands for every Sun clock.
 
 Unfinished or worth checking:
+
+- The Maya clock uses the GMT correlation (584,283) and turns the day at local midnight; an option for Thompson's 584,285, or the nine Lords of the Night, could come later. Its numerals draw the b'ak'tun place modulo 20, which only matters after the year 4772.
 
 - The one-moment page's Sun and Moon readings use present-era formulas; far from now they drift, as the page says. More suggested moments could be added (each needs a sourced UTC time), and any new drawer appears there automatically.
 
