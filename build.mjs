@@ -108,6 +108,9 @@ clocks.forEach((c, i) => {
 <div class="control"><label for="latitude">Latitude, ° north</label><input id="latitude" data-store="coc-latitude" type="number" inputmode="decimal" min="-90" max="90" step="any" placeholder="e.g. 51.5"></div>
 <div class="control"><label for="longitude">Longitude, ° east</label><input id="longitude" data-store="coc-longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" placeholder="e.g. -0.13"></div>`;
   }
+  if (c.id === "maya") {
+    extra = `<ol class="glyphs" id="maya-glyphs" role="img" aria-label="The Long Count in Maya numerals"></ol>`;
+  }
   if (c.id === "bells") {
     extra = `<div class="control"><button type="button" class="bell" id="strike">Strike the bell</button></div>`;
   }

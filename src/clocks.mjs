@@ -236,4 +236,28 @@ export const clocks = [
       ["Sun and Moon Data for One Day", "https://aa.usno.navy.mil/data/RS_OneDay", "U.S. Naval Observatory, U.S. government work"],
     ],
   },
+  {
+    no: 12,
+    id: "maya",
+    slug: "maya-long-count",
+    name: "The Maya Long Count",
+    basis: "local",
+    teaser: "Thirteen b’ak’tuns and counting, since 3114 BC.",
+    description:
+      "A live reading of the Maya Long Count, the count of days since the creation date of 3114 BC, with the day in the 260-day tzolk’in and the 365-day haab’, drawn in bar-and-dot numerals.",
+    read: `
+      <p>The Long Count is a count of days, written in five places. The last place, the k’in, is a single day; twenty k’in make a winal, eighteen winal a tun of 360 days, twenty tun a k’atun of 7,200 days, and twenty k’atun a b’ak’tun of 144,000 days.<sup><a href="#s1">1</a></sup> A reading such as 13.0.14.1.12 means 13 b’ak’tun, 0 k’atun, 14 tun, 1 winal and 12 k’in: 1,877,072 days since the count began.</p>
+      <p>Every place counts in twenties except the third, which turns over at eighteen, so that a tun of 360 days is close to a solar year.<sup><a href="#s1">1</a>, <a href="#s3">3</a></sup> Below the reading, the clock writes the same five places in Maya numerals, highest at the top: a dot is one, a bar five, and a shell zero, so that thirteen is three dots over two bars.<sup><a href="#s3">3</a></sup></p>
+      <p>The line under the reading gives the same day in two other Maya counts. The tzolk’in pairs thirteen numbers with twenty day names, so 1 Imix is followed by 2 Ik’, and a pair comes back only after 260 days.<sup><a href="#s4">4</a></sup> The haab’ is eighteen months of twenty days and five days of Wayeb’; each month starts with its “seating”, usually counted as day 0, so 0 Pop is followed by 1 Pop.<sup><a href="#s2">2</a></sup> A pair of the two repeats after 18,980 days, about 52 years: the Calendar Round.<sup><a href="#s2">2</a></sup> The sources do not say when a Maya day began, so this clock turns the day at your local midnight, and the bar fills through it. To read any other date, stop the cabinet on the <a href="/moment/">one-moment page</a>.</p>`,
+    history: `
+      <p>The count starts from a creation date written 13.0.0.0.0 4 Ajaw 8 Kumk’u.<sup><a href="#s2">2</a></sup> Under the generally accepted correlation, called GMT after Goodman, Martínez and Thompson, that day is Julian Day Number 584,283, or 11 August 3114 BC in the proleptic Gregorian calendar.<sup><a href="#s1">1</a></sup> Thompson’s later figure, 584,285, puts every date two days later, and this clock uses the first.<sup><a href="#s1">1</a></sup> On that correlation, 13.0.0.0.0 came round again on 21 December 2012; some sources put it on 23 December.<sup><a href="#s1">1</a></sup> The count did not end there. It went on to 13.0.0.0.1, and is still running.</p>
+      <p>The oldest surviving Long Count dates come from the edge of the Maya world, not its centre. The earliest contemporaneous one yet found, on Stela 2 at Chiapa de Corzo in Chiapas, dates to 36 BC, though the reading is not certain; Stela C at Tres Zapotes carries 7.16.6.16.18, in 32 BC.<sup><a href="#s1">1</a></sup> No Long Count date written with the zero glyph is known before the third century, so whether these early carvers had a zero sign is inferred, not seen.<sup><a href="#s3">3</a></sup> The first unequivocally Maya example is Stela 29 at Tikal, 8.12.14.8.15, in AD 292.<sup><a href="#s1">1</a></sup></p>
+      <p>The monuments stopped using it about six centuries later. Stela 10 at Xultun, 10.3.0.0.0 1 Ajaw 3 Yaxk’in, from AD 889, was the latest known when it was found; a date of 10.4.0.0.0, 18 January 909, is also recorded.<sup><a href="#s1">1</a></sup> This clock gives the Xultun day as 1 Ajaw 3 Yaxk’in too, and 10.4.0.0.0 as 18 January 909. The tzolk’in outlived the Long Count: several Maya communities in the Guatemalan highlands still keep it.<sup><a href="#s4">4</a></sup></p>`,
+    sources: [
+      ["Mesoamerican Long Count calendar", "https://en.wikipedia.org/wiki/Mesoamerican_Long_Count_calendar", "Wikipedia, CC BY-SA 4.0"],
+      ["Maya calendar", "https://en.wikipedia.org/wiki/Maya_calendar", "Wikipedia, CC BY-SA 4.0"],
+      ["Maya numerals", "https://en.wikipedia.org/wiki/Maya_numerals", "Wikipedia, CC BY-SA 4.0"],
+      ["Tzolkʼin", "https://en.wikipedia.org/wiki/Tzolk%CA%BCin", "Wikipedia, CC BY-SA 4.0"],
+    ],
+  },
 ];
