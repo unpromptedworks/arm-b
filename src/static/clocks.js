@@ -428,6 +428,38 @@
       };
     },
 
+    // The Roman watches: the night from sunset to sunrise in four equal
+    // vigiliae, each three of its twelve unequal hours.
+    watches(d) {
+      const where = place();
+      const t = temporal(jdOf(d), where, 4);
+      const at = where.own ? "your place" : "Rome";
+      if (t.polar) {
+        return {
+          main: t.polar === "day" ? "Sun up" : "Sun down",
+          sub: `no rising or setting today at ${at}`,
+          frac: 0,
+          utc: false,
+        };
+      }
+      if (t.half === "day") {
+        const left = Math.max(0, Math.round((t.end - jdOf(d)) * 1440));
+        return {
+          main: "Daylight",
+          sub: `first watch in ${Math.floor(left / 60)}h ${pad(left % 60)}m  ·  at ${at}`,
+          frac: (jdOf(d) - t.start) / (t.end - t.start),
+          utc: false,
+        };
+      }
+      const name = ["prima", "secunda", "tertia", "quarta"][t.hour - 1];
+      return {
+        main: `Vigilia ${name}`,
+        sub: `watch ${["I", "II", "III", "IV"][t.hour - 1]} of IV  ·  ${hourmin(t.len)} each  ·  at ${at}`,
+        frac: t.frac,
+        utc: false,
+      };
+    },
+
     maya(d) {
       const n = mayaDays(d);
       const frac = localSeconds(d) / DAY;
@@ -512,13 +544,14 @@
   // Add half a minute so the shown minute is rounded, not truncated.
   const clockTime = (jd) => dateOf(jd + 30 / 86400).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
   const japan = sunFacts && sunFacts.dataset.place === "tokyo";
+  const watch = sunFacts && sunFacts.dataset.kind === "watches";
   const drawSun = sunFacts && (() => {
     const where = place(japan ? TOKYO : ROME);
     const t = temporal(jdOf(current()), where, japan ? 6 : 12);
     const deg = (v, p, m) => `${Math.abs(v)}° ${v < 0 ? m : p}`;
     const at = `${deg(where.lat, "N", "S")}, ${deg(where.lon, "E", "W")}${where.own ? "" : ` (${where.name})`}`;
     let line;
-    if (t.polar) line = `The Sun ${t.polar === "day" ? "stays up" : "stays down"} all day at ${at}, so there are no ${japan ? "Japanese" : "unequal"} hours`;
+    if (t.polar) line = `The Sun ${t.polar === "day" ? "stays up" : "stays down"} all day at ${at}, so there are no ${japan ? "Japanese hours" : watch ? "watches" : "unequal hours"}`;
     else {
       const other = t.half === "day" ? "Sunset" : "Sunrise";
       line = `${t.half === "day" ? "Sunrise was" : "Sunset was"} ${clockTime(t.start)}, ${other.toLowerCase()} at ${clockTime(t.end)} by your clock  ·  ${at}`;

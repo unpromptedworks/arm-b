@@ -1,11 +1,11 @@
 # Now
 
-The Cabinet of Clocks has twelve drawers, each a live clock with a sourced page. Seven cut up the day by the clock, the eighth (the age of the Moon) counts the month, and the ninth to eleventh (unequal hours; Italian and Babylonian hours; Japanese temporal hours) cut the day by the Sun at a place, Rome (Tokyo for the Japanese clock) unless the reader enters their own. The twelfth, the Maya Long Count, counts days since 3114 BC, with the tzolk'in and haab' and the count drawn in bar-and-dot numerals. A "one moment" page (`/moment/`) stops every drawer at a date and time the reader picks. The cabinet is working toward a collection broad enough that the front page reads as a survey of how people have cut up time.
+The Cabinet of Clocks has thirteen drawers, each a live clock with a sourced page. Seven cut up the day by the clock, the eighth (the age of the Moon) counts the month, and the ninth to eleventh (unequal hours; Italian and Babylonian hours; Japanese temporal hours) cut the day by the Sun at a place, Rome (Tokyo for the Japanese clock) unless the reader enters their own. The twelfth, the Maya Long Count, counts days since 3114 BC, with the tzolk'in and haab' and the count drawn in bar-and-dot numerals. The thirteenth, the Roman watches, cuts the night from sunset to sunrise into four watches (at Rome unless the reader enters a place). A "one moment" page (`/moment/`) stops every drawer at a date and time the reader picks. The cabinet is working toward a collection broad enough that the front page reads as a survey of how people have cut up time.
 
 Next steps, roughly in order:
 
-- The Roman watches (the night in four watches, which would complete the unequal-hours story).
-- A printable face, or a comparison view of one day laid out as bands for every Sun clock.
+- A comparison view of one day laid out as bands for every Sun clock (unequal hours, Italian hours, Japanese hours, watches), or a printable face.
+- The Roman day was also named in parts (mane, meridies, vespera); a drawer or note for the named parts of the civil day could come later.
 
 Unfinished or worth checking:
 
@@ -16,7 +16,8 @@ Unfinished or worth checking:
 - The ship's bells clock uses the plain count through the dog watches; navies differ, and a note or option for the other pattern could come later.
 - The sidereal clock is mean, not apparent, sidereal time; fine for looking up, not for instruments, as the about page says.
 - The moon clock's phase names call a principal phase within 6° of elongation (about half a day either side); the lit fraction uses (1 − cos E)/2 with the elongation, a close approximation of the phase angle.
-- The unequal-hours clock counts the night in twelve hours too; in early Greece and Rome the night was kept in watches, which the page says. The sunrise/sunset line now rounds to the minute (session 6).
+- The unequal-hours clock counts the night in twelve hours too; the night watches are now drawer No. 13.
+- The watches clock takes each watch as exactly a quarter of the night; the Hebrew three-watch night and the Jewish fixed-time version (sunset to 10 pm, and so on) are described, not shown. The sunrise/sunset line now rounds to the minute (session 6).
 - The Italian-hours clock counts from sunset, not from the end of dusk half an hour later, which some places used. Wikipedia's Lugano example (December sunrise in the 14th hour) does not match the clock and was left out; worth finding out why.
 - The Japanese clock starts each hour at sunrise, noon or sunset, as the English source says; some accounts centre the hours on those moments instead, and some started the day at dawn rather than sunrise. A note or option could come later.
 - On the large dial, "Night hour VIII" on the unequal-hours clock is probably too wide and gets cut off; worth checking.
