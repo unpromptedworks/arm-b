@@ -175,7 +175,7 @@ export const clocks = [
       <p>From sunrise to sunset is always twelve hours, and from sunset to sunrise twelve more, so the length of an hour changes through the year and from place to place.<sup><a href="#s1">1</a></sup> The reading names the hour you are in, counted from sunrise for the day and from sunset for the night. The line under it says how long each of today’s hours lasts, and the bar fills as the current one passes.</p>
       <p>The end of the sixth hour of the day is noon, whatever the season.<sup><a href="#s1">1</a></sup> Until you enter a latitude and longitude, the clock keeps the hours of Rome. Your numbers stay in your browser, and the longitude is shared with the sidereal clock. Inside the polar circles, on days when the Sun neither rises nor sets, there are no unequal hours to count, and the clock says so.</p>`,
     history: `
-      <p>These are the hours of antiquity, called temporal, unequal or seasonal hours.<sup><a href="#s1">1</a></sup> The Egyptians divided the night into twelve; the Greeks divided the time from sunrise to sunset into twelve, at first leaving the night to three or four watches.<sup><a href="#s1">1</a></sup> The Romans numbered the hours of the day from <i>hora prima</i> to the twelfth, and in the Mediterranean an hour ran from about 45 minutes at the winter solstice to 75 at the summer one.<sup><a href="#s2">2</a></sup> This clock gives 45.6 and 76.1 minutes at Rome for the solstices of 2026.</p>
+      <p>These are the hours of antiquity, called temporal, unequal or seasonal hours.<sup><a href="#s1">1</a></sup> The Egyptians divided the night into twelve; the Greeks divided the time from sunrise to sunset into twelve, at first leaving the night to three or four watches, which drawer <a href="/clocks/roman-watches/">No. 13</a> keeps.<sup><a href="#s1">1</a></sup> The Romans numbered the hours of the day from <i>hora prima</i> to the twelfth, and in the Mediterranean an hour ran from about 45 minutes at the winter solstice to 75 at the summer one.<sup><a href="#s2">2</a></sup> This clock gives 45.6 and 76.1 minutes at Rome for the solstices of 2026.</p>
       <p>The mechanical clock ended them in most of Europe. A clock that kept unequal hours had to have its period changed every morning and evening, and the mechanical clock furthered the adoption of equal hours instead.<sup><a href="#s1">1</a></sup> They survived elsewhere. Jewish law still reckons an hour as a twelfth of the time from sunrise to sunset.<sup><a href="#s1">1</a></sup> In Japan, clockmakers built clocks that divided day and night into six units each, of lengths that changed with the season, and the country kept them until it adopted Western timekeeping in 1873.<sup><a href="#s3">3</a></sup> Drawer <a href="/clocks/japanese-hours/">No. 11</a> keeps those hours.</p>
       <p>The clock finds sunrise and sunset from the Naval Observatory’s approximate formulas for the Sun<sup><a href="#s5">5</a></sup> and the sunrise equation, taking the Sun as risen when its centre is 0.833° below the horizon, which allows for refraction and the width of the Sun’s disc.<sup><a href="#s4">4</a></sup> For Rome on 27 October 2026 it gives 05:36 and 16:11 UTC, the same minutes as the Observatory’s own tables.<sup><a href="#s6">6</a></sup></p>`,
     sources: [
@@ -258,6 +258,31 @@ export const clocks = [
       ["Maya calendar", "https://en.wikipedia.org/wiki/Maya_calendar", "Wikipedia, CC BY-SA 4.0"],
       ["Maya numerals", "https://en.wikipedia.org/wiki/Maya_numerals", "Wikipedia, CC BY-SA 4.0"],
       ["Tzolkʼin", "https://en.wikipedia.org/wiki/Tzolk%CA%BCin", "Wikipedia, CC BY-SA 4.0"],
+    ],
+  },
+  {
+    no: 13,
+    id: "watches",
+    slug: "roman-watches",
+    name: "The Roman watches",
+    basis: "sun",
+    teaser: "The night in four watches, from sunset to sunrise.",
+    description:
+      "A live clock showing the Roman night watches, the vigiliae: the time from sunset to sunrise cut into four equal watches, long in winter and short in summer.",
+    read: `
+      <p>The Romans kept the night in four watches, each of three hours.<sup><a href="#s1">1</a></sup> The hours were the unequal ones of drawer <a href="/clocks/unequal-hours/">No. 09</a>, twelve from sunset to sunrise,<sup><a href="#s2">2</a></sup> so a watch is a quarter of the night, whatever its length. The reading names the watch you are in, <i>vigilia prima</i> to <i>vigilia quarta</i>; the line beneath gives its number and how long each of tonight’s watches lasts, and the bar fills as the current one passes.</p>
+      <p>The watches keep the night only. By day the clock reads “Daylight”, the line beneath says how long until the first watch begins at sunset, and the bar fills through the day. Until you enter a latitude and longitude, the clock keeps the watches of Rome; your numbers stay in your browser and are shared with the other Sun clocks and the sidereal clock. Where the Sun does not rise or set, there is no night to divide, and the clock says so.</p>`,
+    history: `
+      <p>A watch is the time one sentry stands. The four night watches of the Romans, three hours each, matched the changes of guard on the watchtowers,<sup><a href="#s1">1</a></sup> and the Greeks before them left the night to three or four watches while they divided the day into twelve hours.<sup><a href="#s2">2</a></sup> The Hebrews and Babylonians kept three: the first watch at dusk, the middle watch at midnight and the morning watch toward dawn.<sup><a href="#s1">1</a></sup> The Bible names all three, the “beginning of the watches” (Lamentations 2:19), the “middle watch” in which Gideon attacked the Midianite camp (Judges 7:19), and the “morning watch” (Exodus 14:24).<sup><a href="#s1">1</a></sup></p>
+      <p>Under Roman rule the count went to four.<sup><a href="#s1">1</a></sup> The Gospels give it both ways: by number, as when Jesus comes to the disciples on the water “in the fourth watch of the night” (Matthew 14:25), and by name, as in Mark 13:35, “at even, or at midnight, or at the cockcrowing, or in the morning”.<sup><a href="#s1">1</a></sup> The early Church kept vigils before a feast through the night, from six in the evening to six in the morning, in four vigils of three hours each.<sup><a href="#s1">1</a></sup> The watches lasted in English long after the soldiers: around the year 1000 Ælfric wrote that one watch has three hours and four watches make twelve, and Shakespeare’s <i>Henry IV, Part 2</i> has a man who “snores out the watch of night”.<sup><a href="#s1">1</a></sup></p>
+      <p>The Romans also named the stretches of the night by what happened in them: <i>prima fax</i>, the lighting of candles; <i>concubia nox</i>, bedtime; <i>intempesta nox</i>, far into the night; <i>media nox</i>, midnight, when the civil day began; <i>gallicinium</i>, cockcrow; <i>conticinium</i>, when the cocks fall silent; and <i>diluculum</i>, dawn.<sup><a href="#s3">3</a></sup></p>
+      <p>Because a watch is a quarter of the night, its length follows the seasons. At Rome in 2026 this clock gives watches of 2 hours 12 minutes at the June solstice and 3 hours 43 minutes at the December one. It finds sunset and sunrise as the unequal-hours clock does, from the Naval Observatory’s approximate formulas for the Sun<sup><a href="#s5">5</a></sup> and the sunrise equation, with the Sun’s centre 0.833° below the horizon.<sup><a href="#s4">4</a></sup></p>`,
+    sources: [
+      ["Watches of the night", "https://en.wikipedia.org/wiki/Watches_of_the_night", "Wikipedia, CC BY-SA 4.0"],
+      ["Hour", "https://en.wikipedia.org/wiki/Hour", "Wikipedia, CC BY-SA 4.0"],
+      ["Roman timekeeping", "https://en.wikipedia.org/wiki/Roman_timekeeping", "Wikipedia, CC BY-SA 4.0"],
+      ["Sunrise equation", "https://en.wikipedia.org/wiki/Sunrise_equation", "Wikipedia, CC BY-SA 4.0"],
+      ["Approximate Solar Coordinates", "https://aa.usno.navy.mil/faq/sun_approx", "U.S. Naval Observatory, U.S. government work"],
     ],
   },
 ];

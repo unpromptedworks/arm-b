@@ -103,8 +103,8 @@ clocks.forEach((c, i) => {
   if (c.id === "sidereal") {
     extra = `<div class="control"><label for="longitude">Your longitude, degrees east</label><input id="longitude" data-store="coc-longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" placeholder="e.g. -0.13"></div>`;
   }
-  if (c.id === "temporal" || c.id === "italian" || c.id === "japanese") {
-    extra = `<span class="dial-sub" id="sun-facts"${c.id === "japanese" ? ' data-place="tokyo"' : ""}></span>
+  if (c.id === "temporal" || c.id === "italian" || c.id === "japanese" || c.id === "watches") {
+    extra = `<span class="dial-sub" id="sun-facts"${c.id === "japanese" ? ' data-place="tokyo"' : ""}${c.id === "watches" ? ' data-kind="watches"' : ""}></span>
 <div class="control"><label for="latitude">Latitude, ° north</label><input id="latitude" data-store="coc-latitude" type="number" inputmode="decimal" min="-90" max="90" step="any" placeholder="e.g. 51.5"></div>
 <div class="control"><label for="longitude">Longitude, ° east</label><input id="longitude" data-store="coc-longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" placeholder="e.g. -0.13"></div>`;
   }
@@ -205,7 +205,7 @@ write("/about/", page({
 <p>The Cabinet of Clocks is a small collection of timekeeping systems, kept running. Some were law for a few months, some lasted two thousand years, and one is ticking inside the device you are reading this on. Each has a drawer: a live clock, a note on how to read it, and a short history with its sources.</p>
 <p>New drawers are added over time. <a href="/moment/">One moment, every clock</a> stops them all at a date and time you choose.</p>
 <h2>How the clocks work</h2>
-<p>Every clock is computed in your browser from your computer’s clock, ten times a second. Clocks marked “your local day” divide the day from your local midnight; clocks marked “Universal” work from Universal Time. None of them is more accurate than the clock they start from. The sidereal clock uses an approximate formula good for everyday looking, not for pointing a telescope, the moon clock places the new and full moons to within about twenty minutes, and the three Sun clocks (unequal, Italian and Japanese hours) place sunrise and sunset to within a minute or two.</p>
+<p>Every clock is computed in your browser from your computer’s clock, ten times a second. Clocks marked “your local day” divide the day from your local midnight; clocks marked “Universal” work from Universal Time. None of them is more accurate than the clock they start from. The sidereal clock uses an approximate formula good for everyday looking, not for pointing a telescope, the moon clock places the new and full moons to within about twenty minutes, and the four Sun clocks (unequal, Italian and Japanese hours, and the Roman watches) place sunrise and sunset to within a minute or two.</p>
 <p>The site sends nothing and fetches nothing from elsewhere. It remembers only a few things, all stored in your own browser: a latitude and longitude you type on the sidereal page or one of the Sun-clock pages, and which hemisphere you choose on the moon page.</p>
 <h2>Sources and credits</h2>
 <p>Facts are drawn from the sources listed on each clock’s page, mostly Wikipedia articles under the Creative Commons Attribution-ShareAlike 4.0 licence, the U.S. Naval Observatory, and, for the Moon’s mean motions, Jean Meeus’s book <cite>Astronomical Algorithms</cite>. The type is your system’s own. The code and words were written for this site.</p>
