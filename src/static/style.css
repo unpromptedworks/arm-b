@@ -281,3 +281,26 @@ button.bell.small { font-size: 0.85rem; padding: 0.3rem 0.8rem; }
   padding-top: 1rem;
 }
 .notes p { font-size: 0.95rem; }
+
+/* One-day page: the Sun clocks as bands across one local day. */
+figure.day-chart { margin: 0 0 1rem; }
+.day-scroll { overflow-x: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 3px; }
+#day-svg { display: block; width: 100%; min-width: 760px; height: auto; font-family: var(--mono); }
+.day-chart figcaption { font-size: 0.95rem; color: var(--muted); margin-top: 0.6rem; }
+.d-night { fill: var(--ink); opacity: 0.1; pointer-events: none; }
+.d-seg { stroke: var(--card); stroke-width: 1.5; }
+.d-seg.even { fill: var(--brass-soft); }
+.d-seg.odd { fill: color-mix(in srgb, var(--brass-soft) 50%, var(--card)); }
+.d-seg.blank { fill: none; }
+.d-lab { font-size: 12px; fill: var(--ink); text-anchor: middle; }
+.d-none { fill: var(--muted); font-family: var(--serif); font-style: italic; font-size: 14px; }
+.d-row { font-family: var(--serif); font-size: 15px; fill: var(--brass); text-anchor: end; }
+.d-tick { stroke: var(--muted); stroke-width: 0.6; stroke-dasharray: 2 3; }
+.d-axis, .d-sun { font-size: 11px; fill: var(--muted); text-anchor: middle; }
+.d-now { stroke: var(--brass); stroke-width: 2.5; }
+ul.day-key { font-size: 0.95rem; padding-left: 1.2rem; }
+ul.day-key li { margin-bottom: 0.3rem; }
+.d-lab.d-small { font-size: 9.5px; }
+@media (prefers-color-scheme: dark) {
+  .d-night { fill: #000; opacity: 0.4; }
+}

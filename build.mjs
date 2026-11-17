@@ -41,7 +41,7 @@ function page({ path, title, description, body }) {
 <body>
 <header class="site"><div class="wrap">
 <a class="mark" href="/">Cabinet <span>of</span> Clocks</a>
-<nav><a href="/">The drawers</a> · <a href="/moment/">One moment</a> · <a href="/about/">About the cabinet</a></nav>
+<nav><a href="/">The drawers</a> · <a href="/moment/">One moment</a> · <a href="/day/">One day</a> · <a href="/about/">About the cabinet</a></nav>
 </div></header>
 <main>
 ${body}
@@ -194,6 +194,51 @@ ${dial(c, false)}
 </div>`,
 }));
 
+// One day by the Sun: every Sun clock laid out across one local day.
+const sunClocks = ["temporal", "japanese", "watches", "italian"].map((id) => clocks.find((c) => c.id === id));
+write("/day/", page({
+  path: "/day/",
+  title: `One day by the Sun · ${NAME}`,
+  description: "One day laid out as bands: unequal hours, Japanese hours, the Roman watches, Italian and Babylonian hours, against your own clock, for any date and place.",
+  body: `<div class="wrap">
+<section class="intro">
+<span class="label"><span class="no">Every Sun clock</span><span></span></span>
+<h1>One day by the Sun</h1>
+<p>Four drawers in the cabinet cut the day by sunrise and sunset. Here they are laid side by side across one day, midnight to midnight by your own clock, so you can see where their hours fall, how they stretch and shrink, and where they part company.</p>
+</section>
+<form class="moment" id="day-form" onsubmit="return false">
+<div class="control">
+<label for="day-date">Date</label>
+<input id="day-date" type="date" min="0001-01-01" max="9999-12-31">
+<button type="button" class="bell" id="day-today">Today</button>
+</div>
+<div class="control">
+<label for="latitude">Latitude, ° north</label><input id="latitude" data-store="coc-latitude" type="number" inputmode="decimal" min="-90" max="90" step="any" placeholder="e.g. 51.5">
+<label for="longitude">Longitude, ° east</label><input id="longitude" data-store="coc-longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" placeholder="e.g. -0.13">
+</div>
+<p class="moment-said" id="day-said" aria-live="polite">&nbsp;</p>
+</form>
+<figure class="day-chart">
+<div class="day-scroll"><svg id="day-svg" viewBox="0 0 1000 380" role="img" aria-label="The day's hours on each Sun clock"></svg></div>
+<figcaption id="day-facts">This chart needs JavaScript to draw.</figcaption>
+</figure>
+<section class="narrow notes">
+<h2>Reading the bands</h2>
+<p>Each band runs from midnight to midnight on the date you choose, by your computer’s clock, with the night shaded. The brass line is the present moment when the day shown is today. On a narrow screen the chart scrolls sideways.</p>
+<ul class="day-key">
+${sunClocks.map((c) => `<li><a href="/clocks/${c.slug}/">${c.name}</a> (${no(c.no)}): ${{
+    temporal: "twelve hours of daylight and twelve of night, each a twelfth of its half, so they lengthen and shorten with the seasons.",
+    japanese: "six hours of day and six of night, numbered 6 5 4 9 8 7 and named for the zodiac animals, each twice the length of an unequal hour.",
+    watches: "the night alone, in four equal watches; daylight is left blank.",
+    italian: "two rows of equal hours: Italian hours counted from the last sunset, Babylonian hours from the last sunrise. Their counts restart at each sunset or sunrise, so the last hour before it is cut short or runs long.",
+  }[c.id]}</li>`).join("\n")}
+</ul>
+<p>All the bands here use one place: the latitude and longitude you enter (shared with the drawers’ own pages, and kept only in your browser), or Rome if you enter none. The Japanese drawer itself keeps Tokyo’s hours until you enter a place; on this page it follows the others, so that every band reads the same sky. Sunrise and sunset come from the same approximate formulas as the drawers, good to a minute or two away from the polar circles. Inside them, on a day with no sunrise or no sunset, there are no hours to draw, and the chart says so.</p>
+<p>The address of the page holds the date you choose, so you can return to it.</p>
+</section>
+</div>`,
+}));
+
 // About the cabinet.
 write("/about/", page({
   path: "/about/",
@@ -203,10 +248,10 @@ write("/about/", page({
 <span class="label"><span class="no">Colophon</span><span></span></span>
 <h1>About the cabinet</h1>
 <p>The Cabinet of Clocks is a small collection of timekeeping systems, kept running. Some were law for a few months, some lasted two thousand years, and one is ticking inside the device you are reading this on. Each has a drawer: a live clock, a note on how to read it, and a short history with its sources.</p>
-<p>New drawers are added over time. <a href="/moment/">One moment, every clock</a> stops them all at a date and time you choose.</p>
+<p>New drawers are added over time. <a href="/moment/">One moment, every clock</a> stops them all at a date and time you choose, and <a href="/day/">One day by the Sun</a> lays the four Sun clocks side by side across a whole day.</p>
 <h2>How the clocks work</h2>
 <p>Every clock is computed in your browser from your computer’s clock, ten times a second. Clocks marked “your local day” divide the day from your local midnight; clocks marked “Universal” work from Universal Time. None of them is more accurate than the clock they start from. The sidereal clock uses an approximate formula good for everyday looking, not for pointing a telescope, the moon clock places the new and full moons to within about twenty minutes, and the four Sun clocks (unequal, Italian and Japanese hours, and the Roman watches) place sunrise and sunset to within a minute or two.</p>
-<p>The site sends nothing and fetches nothing from elsewhere. It remembers only a few things, all stored in your own browser: a latitude and longitude you type on the sidereal page or one of the Sun-clock pages, and which hemisphere you choose on the moon page.</p>
+<p>The site sends nothing and fetches nothing from elsewhere. It remembers only a few things, all stored in your own browser: a latitude and longitude you type on the sidereal page, one of the Sun-clock pages or the one-day page, and which hemisphere you choose on the moon page.</p>
 <h2>Sources and credits</h2>
 <p>Facts are drawn from the sources listed on each clock’s page, mostly Wikipedia articles under the Creative Commons Attribution-ShareAlike 4.0 licence, the U.S. Naval Observatory, and, for the Moon’s mean motions, Jean Meeus’s book <cite>Astronomical Algorithms</cite>. The type is your system’s own. The code and words were written for this site.</p>
 <p>This site was made by an AI, as part of an experiment: <a href="${ABOUT}">about the experiment</a>.</p>
