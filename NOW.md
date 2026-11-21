@@ -1,10 +1,10 @@
 # Now
 
-The Cabinet of Clocks has thirteen drawers, each a live clock with a sourced page. Seven cut up the day by the clock, the eighth (the age of the Moon) counts the month, and the ninth to eleventh (unequal hours; Italian and Babylonian hours; Japanese temporal hours) cut the day by the Sun at a place, Rome (Tokyo for the Japanese clock) unless the reader enters their own. The twelfth, the Maya Long Count, counts days since 3114 BC, with the tzolk'in and haab' and the count drawn in bar-and-dot numerals. The thirteenth, the Roman watches, cuts the night from sunset to sunrise into four watches (at Rome unless the reader enters a place). A "one moment" page (`/moment/`) stops every drawer at a date and time the reader picks. The cabinet is working toward a collection broad enough that the front page reads as a survey of how people have cut up time.
+The Cabinet of Clocks has thirteen drawers, each a live clock with a sourced page. Seven cut up the day by the clock, the eighth (the age of the Moon) counts the month, and the ninth to eleventh (unequal hours; Italian and Babylonian hours; Japanese temporal hours) cut the day by the Sun at a place, Rome (Tokyo for the Japanese clock) unless the reader enters their own. The twelfth, the Maya Long Count, counts days since 3114 BC, with the tzolk'in and haab' and the count drawn in bar-and-dot numerals. The thirteenth, the Roman watches, cuts the night from sunset to sunrise into four watches (at Rome unless the reader enters a place). A "one moment" page (`/moment/`) stops every drawer at a date and time the reader picks, and a "one day" page (`/day/`) lays the four Sun clocks out as bands across one local day, for any date and place. The cabinet is working toward a collection broad enough that the front page reads as a survey of how people have cut up time.
 
 Next steps, roughly in order:
 
-- A comparison view of one day laid out as bands for every Sun clock (unequal hours, Italian hours, Japanese hours, watches), or a printable face.
+- A printable face for one of the clocks, or a new drawer (the named parts of the Roman day; a calendar clock such as the French Republican calendar's days and décades).
 - The Roman day was also named in parts (mane, meridies, vespera); a drawer or note for the named parts of the civil day could come later.
 
 Unfinished or worth checking:
@@ -21,4 +21,5 @@ Unfinished or worth checking:
 - The Italian-hours clock counts from sunset, not from the end of dusk half an hour later, which some places used. Wikipedia's Lugano example (December sunrise in the 14th hour) does not match the clock and was left out; worth finding out why.
 - The Japanese clock starts each hour at sunrise, noon or sunset, as the English source says; some accounts centre the hours on those moments instead, and some started the day at dawn rather than sunrise. A note or option could come later.
 - On the large dial, "Night hour VIII" on the unequal-hours clock is probably too wide and gets cut off; worth checking.
+- The one-day page scrolls sideways on phones and its row labels scroll away with it; sticky labels (an HTML column beside the SVG) would help. Its "night about" length is 24 hours minus the daylight, so it is slightly off on clock-change days and in the polar regions' last days of rising and setting. Very narrow hours (a summer night's unequal hour near the polar circles) lose their labels.
 - The front-page drawer for Italian hours wraps its sub-line to two lines on narrow drawers.

@@ -536,6 +536,7 @@
       }
       tick();
       if (drawSun) drawSun();
+      if (drawDay) drawDay();
     });
   }
 
@@ -701,6 +702,182 @@
     };
     window.addEventListener("hashchange", fromHash);
     fromHash();
+  }
+
+  // One-day page: every Sun clock laid out across one local day, as
+  // bands of SVG, for a date kept in the address (#2026-12-21).
+  const daySvg = document.getElementById("day-svg");
+  const drawDay = daySvg && (() => {
+    const dateBox = document.getElementById("day-date");
+    const said = document.getElementById("day-said");
+    const facts = document.getElementById("day-facts");
+    const W = 1000, X0 = 168, X1 = 968, TOP = 30, ROW = 46, GAP = 8;
+    const ROWS = [
+      ["Your clock", "/"],
+      ["Unequal hours", "/clocks/unequal-hours/"],
+      ["Japanese hours", "/clocks/japanese-hours/"],
+      ["Roman watches", "/clocks/roman-watches/"],
+      ["Italian hours", "/clocks/italian-hours/"],
+      ["Babylonian hours", "/clocks/italian-hours/"],
+    ];
+    const H = TOP + ROWS.length * (ROW + GAP) + 26;
+    const where = place();
+    let day = /^\d{4}-\d{2}-\d{2}$/.test(dateBox.value) ? dateBox.value : null;
+    const now = new Date();
+    const start = day ? new Date(+day.slice(0, 4), +day.slice(5, 7) - 1, +day.slice(8, 10)) : new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (day) start.setFullYear(+day.slice(0, 4)); // years below 100
+    const end = new Date(start.getTime());
+    end.setDate(end.getDate() + 1);
+    const j0 = jdOf(start), j1 = jdOf(end);
+    const x = (jd) => X0 + ((jd - j0) / (j1 - j0)) * (X1 - X0);
+    const clip = (jd) => Math.min(j1, Math.max(j0, jd));
+    const rowY = (i) => TOP + i * (ROW + GAP);
+    const out = [];
+    const text = (tx, ty, s, cls) => out.push(`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" class="${cls}">${s}</text>`);
+
+    const { events, polar } = sunEvents((j0 + j1) / 2, where);
+    const shadeTo = rowY(ROWS.length) - GAP;
+    // The time axis along the bottom, and sunrise and sunset along the top.
+    const axisY = rowY(ROWS.length) + 8;
+    for (let h = 0; h <= 24; h += 3) {
+      const t = new Date(start.getTime()); t.setHours(h, 0, 0, 0);
+      const jd = h === 24 ? j1 : jdOf(t);
+      if (jd < j0 || jd > j1) continue;
+      out.push(`<line class="d-tick" x1="${x(jd).toFixed(1)}" x2="${x(jd).toFixed(1)}" y1="${TOP - 4}" y2="${axisY}"/>`);
+      text(x(jd), axisY + 14, `${pad(h % 24 === 0 && h ? 24 : h)}:00`, "d-axis");
+    }
+
+    // Row labels.
+    ROWS.forEach(([name, href], i) => {
+      out.push(`<a href="${href}"><text x="${X0 - 12}" y="${(rowY(i) + ROW / 2 + 5).toFixed(1)}" class="d-row">${name}</text></a>`);
+    });
+
+    // A band of segments: [from, to, label] in Julian days.
+    const band = (i, segs) => {
+      const y = rowY(i);
+      segs.forEach(([a, b, label, kind], k) => {
+        if (b <= j0 || a >= j1) return;
+        const xa = x(clip(a)), xb = x(clip(b));
+        out.push(`<rect class="d-seg ${kind || (k % 2 ? "odd" : "even")}" x="${xa.toFixed(1)}" y="${y}" width="${Math.max(0, xb - xa).toFixed(1)}" height="${ROW}"/>`);
+        if (label && xb - xa > label.length * 7.2 + 4) text((xa + xb) / 2, y + ROW / 2 + 5, label, "d-lab");
+        else if (label && xb - xa > label.length * 5.5 + 2) text((xa + xb) / 2, y + ROW / 2 + 4, label, "d-lab d-small");
+      });
+    };
+
+    // Your clock: the hours of the day, labelled every third.
+    const civil = [];
+    for (let h = 0; h < 24; h++) {
+      const a = new Date(start.getTime()); a.setHours(h, 0, 0, 0);
+      const b = new Date(start.getTime()); b.setHours(h + 1, 0, 0, 0);
+      if (a < start || a >= end) continue;
+      civil.push([jdOf(a), Math.min(jdOf(b), j1), h % 3 === 0 ? pad(h) : ""]);
+    }
+    band(0, civil);
+
+    const pairs = [];
+    for (let i = 0; i < events.length - 1; i++) if (events[i][1] !== events[i + 1][1]) pairs.push([events[i], events[i + 1]]);
+    // Each half (sunrise to sunset, sunset to sunrise) in equal parts;
+    // a half named in skip is left blank, as the day is for the watches.
+    const split = (parts, label, skip) => {
+      const segs = [];
+      for (const [[a, k], [b]] of pairs) {
+        if (k === skip) { segs.push([a, b, "", "blank"]); continue; }
+        const len = (b - a) / parts;
+        for (let n = 0; n < parts; n++) segs.push([a + n * len, a + (n + 1) * len, label(k, n), n % 2 ? "odd" : "even"]);
+      }
+      return segs;
+    };
+    // From each sunset (or sunrise) to the next: equal hours, the last cut short.
+    const count = (kind) => {
+      const marks = events.filter(([, k]) => k === kind).map(([t]) => t);
+      const segs = [];
+      for (let m = 0; m < marks.length - 1; m++) {
+        if (marks[m + 1] - marks[m] > 1.5) continue; // a polar gap
+        for (let n = 0; marks[m] + n / 24 < marks[m + 1]; n++) {
+          segs.push([marks[m] + n / 24, Math.min(marks[m] + (n + 1) / 24, marks[m + 1]), String(n + 1), n % 2 ? "odd" : "even"]);
+        }
+      }
+      return segs;
+    };
+
+    if (polar) {
+      for (let i = 1; i < ROWS.length; i++) text((X0 + X1) / 2, rowY(i) + ROW / 2 + 5, polar === "day" ? "The Sun stays up: no hours to count" : "The Sun stays down: no hours to count", "d-lab d-none");
+    } else {
+      band(1, split(12, (k, n) => roman(n + 1)));
+      band(2, split(6, (k, n) => `${JP_NUM[n]} ${JP_SIGN[k][n][1]}`));
+      band(3, split(4, (k, n) => (k === "night" ? ["I", "II", "III", "IV"][n] : ""), "day"));
+      band(4, count("night"));
+      band(5, count("day"));
+    }
+
+    if (!polar) {
+      for (const [t, k] of events) {
+        if (t < j0 || t >= j1) continue;
+        text(x(t), TOP - 12, `${k === "day" ? "Sunrise" : "Sunset"} ${clockTime(t)}`, "d-sun");
+      }
+    }
+
+    // Night, shaded over every band.
+    if (polar === "night") out.push(`<rect class="d-night" x="${X0}" y="${TOP - 4}" width="${X1 - X0}" height="${shadeTo - TOP + 8}"/>`);
+    else if (!polar) {
+      for (let i = 0; i < events.length - 1; i++) {
+        const [a, ka] = events[i], [b, kb] = events[i + 1];
+        if (ka === "night" && kb === "day" && b > j0 && a < j1) {
+          out.push(`<rect class="d-night" x="${x(clip(a)).toFixed(1)}" y="${TOP - 4}" width="${(x(clip(b)) - x(clip(a))).toFixed(1)}" height="${shadeTo - TOP + 8}"/>`);
+        }
+      }
+    }
+
+    // The present moment, if it falls on the day shown.
+    const jn = jdOf(now);
+    if (jn >= j0 && jn < j1) {
+      out.push(`<line class="d-now" x1="${x(jn).toFixed(1)}" x2="${x(jn).toFixed(1)}" y1="${TOP - 4}" y2="${shadeTo + 4}"/>`);
+    }
+
+    daySvg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    daySvg.innerHTML = out.join("");
+
+    const deg = (v, p, m) => `${Math.abs(v)}° ${v < 0 ? m : p}`;
+    const at = `${deg(where.lat, "N", "S")}, ${deg(where.lon, "E", "W")}${where.own ? "" : ` (${where.name})`}`;
+    const shown = start.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    said.textContent = `${shown}  ·  ${at}`;
+    let line;
+    if (polar) line = `The Sun ${polar === "day" ? "stays up" : "stays down"} all day, so none of these clocks has hours to count.`;
+    else {
+      const p = pairs.find(([[a, k], [b]]) => k === "day" && b > j0 && a < j1) || pairs.find(([[a, k]]) => k === "day");
+      const dayLen = p[1][0] - p[0][0];
+      const nightLen = 1 - dayLen;
+      line = `Daylight ${hourmin(dayLen)}, night about ${hourmin(nightLen)}. ` +
+        `An unequal hour of the day lasts ${minsec(dayLen / 12)}, of the night ${minsec(nightLen / 12)}; ` +
+        `a Japanese hour of the day ${hourmin(dayLen / 6)}, of the night ${hourmin(nightLen / 6)}; ` +
+        `a Roman watch ${hourmin(nightLen / 4)}.`;
+    }
+    facts.textContent = line;
+    daySvg.setAttribute("aria-label", `The Sun clocks' hours on ${shown} at ${at}. ${line}`);
+  });
+  if (drawDay) {
+    const dateBox = document.getElementById("day-date");
+    const today = document.getElementById("day-today");
+    const setHash = (h) => {
+      try { history.replaceState(null, "", h ? "#" + h : location.pathname); } catch (e) { /* ignore */ }
+    };
+    const fromHash = () => {
+      const h = decodeURIComponent(location.hash.slice(1));
+      if (/^\d{4}-\d{2}-\d{2}$/.test(h)) dateBox.value = h;
+      drawDay();
+    };
+    dateBox.addEventListener("change", () => {
+      setHash(/^\d{4}-\d{2}-\d{2}$/.test(dateBox.value) ? dateBox.value : "");
+      drawDay();
+    });
+    today.addEventListener("click", () => {
+      dateBox.value = "";
+      setHash("");
+      drawDay();
+    });
+    window.addEventListener("hashchange", fromHash);
+    fromHash();
+    setInterval(drawDay, 30000);
   }
 
   // Ship's bells page: strike the current count with Web Audio.
