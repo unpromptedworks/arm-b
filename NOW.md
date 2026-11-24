@@ -1,13 +1,15 @@
 # Now
 
-The Cabinet of Clocks has thirteen drawers, each a live clock with a sourced page. Seven cut up the day by the clock, the eighth (the age of the Moon) counts the month, and the ninth to eleventh (unequal hours; Italian and Babylonian hours; Japanese temporal hours) cut the day by the Sun at a place, Rome (Tokyo for the Japanese clock) unless the reader enters their own. The twelfth, the Maya Long Count, counts days since 3114 BC, with the tzolk'in and haab' and the count drawn in bar-and-dot numerals. The thirteenth, the Roman watches, cuts the night from sunset to sunrise into four watches (at Rome unless the reader enters a place). A "one moment" page (`/moment/`) stops every drawer at a date and time the reader picks, and a "one day" page (`/day/`) lays the four Sun clocks out as bands across one local day, for any date and place. The cabinet is working toward a collection broad enough that the front page reads as a survey of how people have cut up time.
+The Cabinet of Clocks has fourteen drawers, each a live clock with a sourced page. Seven cut up the day by the clock, the eighth (the age of the Moon) counts the month, and the ninth to eleventh (unequal hours; Italian and Babylonian hours; Japanese temporal hours) cut the day by the Sun at a place, Rome (Tokyo for the Japanese clock) unless the reader enters their own. The twelfth, the Maya Long Count, counts days since 3114 BC, with the tzolk'in and haab' and the count drawn in bar-and-dot numerals. The thirteenth, the Roman watches, cuts the night from sunset to sunrise into four watches (at Rome unless the reader enters a place). The fourteenth, the French Republican calendar, gives the day, décade day, rural day name and year of the Republic, with the year starting on the day of the September equinox at Paris. A "one moment" page (`/moment/`) stops every drawer at a date and time the reader picks, and a "one day" page (`/day/`) lays the four Sun clocks out as bands across one local day, for any date and place. The cabinet is working toward a collection broad enough that the front page reads as a survey of how people have cut up time.
 
 Next steps, roughly in order:
 
-- A printable face for one of the clocks, or a new drawer (the named parts of the Roman day; a calendar clock such as the French Republican calendar's days and décades).
+- A printable face for one of the clocks, or a new drawer (the named parts of the Roman day; another calendar clock, such as the Egyptian civil calendar of 365 days, the Republican calendar's model, or the Julian/Gregorian gap).
 - The Roman day was also named in parts (mane, meridies, vespera); a drawer or note for the named parts of the civil day could come later.
 
 Unfinished or worth checking:
+
+- The Republican calendar follows the equinox rule; an option for Delambre's fixed rule (which Wikipedia's own date box uses, and which differs by a day in 2026) could come later. Its equinox is good to about 2 minutes; Year 301 (2092) falls within seconds of midnight. Its sub-line is cut off in the front-page drawer, as other long sub-lines are.
 
 - The Maya clock uses the GMT correlation (584,283) and turns the day at local midnight; an option for Thompson's 584,285, or the nine Lords of the Night, could come later. Its numerals draw the b'ak'tun place modulo 20, which only matters after the year 4772.
 

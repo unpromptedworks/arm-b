@@ -275,6 +275,84 @@
 
   const dateOf = (jd) => new Date((jd - 2440587.5) * 86400000);
 
+  // The French Republican calendar. Each year begins at midnight on the
+  // day the true autumnal equinox falls at the Paris Observatory (the
+  // decree, quoted in Wikipedia, "French Republican calendar"). The
+  // equinox comes from Meeus, Astronomical Algorithms, ch. 27 (mean
+  // equinox plus 24 periodic terms), with ΔT taken as 69 s, and is put in
+  // Paris local apparent time: longitude 2.3371° E plus the equation of
+  // time. The day itself turns at the reader's local midnight. Day names
+  // from Fabre d'Églantine's rural calendar, as tabled in that article.
+  const REP_MONTHS = ["Vendémiaire", "Brumaire", "Frimaire", "Nivôse", "Pluviôse", "Ventôse",
+    "Germinal", "Floréal", "Prairial", "Messidor", "Thermidor", "Fructidor"];
+  const REP_DAYS = ["Primidi", "Duodi", "Tridi", "Quartidi", "Quintidi", "Sextidi", "Septidi", "Octidi", "Nonidi", "Décadi"];
+  const REP_FETES = [["Fête de la Vertu", "Virtue"], ["Fête du Génie", "Talent"], ["Fête du Travail", "Labour"],
+    ["Fête de l’Opinion", "Convictions"], ["Fête des Récompenses", "Honours"], ["Fête de la Révolution", "the Revolution"]];
+  const REP_NAMES = [
+    "Raisin|Grape;Safran|Saffron;Châtaigne|Chestnut;Colchique|Autumn Crocus;Cheval|Horse;Balsamine|Impatiens;Carotte|Carrot;Amaranthe|Amaranth;Panais|Parsnip;Cuve|Vat;Pomme de terre|Potato;Immortelle|Strawflower;Potiron|Winter squash;Réséda|Mignonette;Âne|Donkey;Belle de nuit|Four o’clock flower;Citrouille|Pumpkin;Sarrasin|Buckwheat;Tournesol|Sunflower;Pressoir|Winepress;Chanvre|Hemp;Pêche|Peach;Navet|Turnip;Amaryllis|Amaryllis;Bœuf|Ox;Aubergine|Eggplant;Piment|Chili pepper;Tomate|Tomato;Orge|Barley;Tonneau|Barrel",
+    "Pomme|Apple;Céleri|Celery;Poire|Pear;Betterave|Beetroot;Oie|Goose;Héliotrope|Heliotrope;Figue|Common fig;Scorsonère|Black Salsify;Alisier|Chequer Tree;Charrue|Plough;Salsifis|Salsify;Mâcre|Water caltrop;Topinambour|Jerusalem artichoke;Endive|Endive;Dindon|Turkey;Chervis|Skirret;Cresson|Watercress;Dentelaire|Leadworts;Grenade|Pomegranate;Herse|Harrow;Bacchante|Baccharis;Azerole|Azarole;Garance|Madder;Orange|Orange;Faisan|Pheasant;Pistache|Pistachio Nut;Macjonc|Tuberous pea;Coing|Quince;Cormier|Service tree;Rouleau|Roller",
+    "Raiponce|Rampion;Turneps|Cattle turnip;Chicorée|Chicory;Nèfle|Medlar;Cochon|Pig;Mâche|Lamb’s lettuce;Chou-fleur|Cauliflower;Miel|Honey;Genièvre|Juniper;Pioche|Pickaxe;Cire|Wax;Raifort|Horseradish;Cèdre|Cedar tree;Sapin|Fir;Chevreuil|Roe deer;Ajonc|Gorse;Cyprès|Cypress Tree;Lierre|Ivy;Sabine|Savin Juniper;Hoyau|Fork hoe;Érable à sucre|Sugar Maple;Bruyère|Heather;Roseau|Reed plant;Oseille|Sorrel;Grillon|Cricket;Pignon|Pine nut;Liège|Cork;Truffe|Truffle;Olive|Olive;Pelle|Shovel",
+    "Tourbe|Peat;Houille|Coal;Bitume|Bitumen;Soufre|Sulphur;Chien|Dog;Lave|Lava;Terre végétale|Topsoil;Fumier|Manure;Salpêtre|Saltpeter;Fléau|Flail;Granit|Granite;Argile|Clay;Ardoise|Slate;Grès|Sandstone;Lapin|Rabbit;Silex|Flint;Marne|Marl;Pierre à chaux|Limestone;Marbre|Marble;Van|Winnowing fan;Pierre à plâtre|Gypsum;Sel|Salt;Fer|Iron;Cuivre|Copper;Chat|Cat;Étain|Tin;Plomb|Lead;Zinc|Zinc;Mercure|Mercury;Crible|Sieve",
+    "Lauréole|Spurge-laurel;Mousse|Moss;Fragon|Butcher’s Broom;Perce-neige|Snowdrop;Taureau|Bull;Laurier-thym|Laurustinus;Amadouvier|Tinder polypore;Mézéréon|Daphne mezereum;Peuplier|Poplar;Coignée|Axe;Ellébore|Hellebore;Brocoli|Broccoli;Laurier|Bay laurel;Avelinier|Filbert;Vache|Cow;Buis|Box Tree;Lichen|Lichen;If|Yew tree;Pulmonaire|Lungwort;Serpette|Billhook;Thlaspi|Pennycress;Thimelé|Rose Daphne;Chiendent|Couch grass;Trainasse|Common Knotgrass;Lièvre|Hare;Guède|Woad;Noisetier|Hazel;Cyclamen|Cyclamen;Chélidoine|Celandine;Traîneau|Sleigh",
+    "Tussilage|Coltsfoot;Cornouiller|Dogwood;Violier|Matthiola;Troène|Privet;Bouc|Billygoat;Asaret|Wild Ginger;Alaterne|Italian Buckthorn;Violette|Violet;Marceau|Goat Willow;Bêche|Spade;Narcisse|Narcissus;Orme|Elm;Fumeterre|Common fumitory;Vélar|Hedge mustard;Chèvre|Goat;Épinard|Spinach;Doronic|Doronicum;Mouron|Pimpernel;Cerfeuil|Chervil;Cordeau|Twine;Mandragore|Mandrake;Persil|Parsley;Cochléaria|Scurvy-grass;Pâquerette|Daisy;Thon|Tuna;Pissenlit|Dandelion;Sylvie|Wood Anemone;Capillaire|Maidenhair fern;Frêne|Ash tree;Plantoir|Dibber",
+    "Primevère|Primrose;Platane|Plane Tree;Asperge|Asparagus;Tulipe|Tulip;Poule|Hen;Bette|Chard;Bouleau|Birch;Jonquille|Daffodil;Aulne|Alder;Couvoir|Incubator;Pervenche|Periwinkle;Charme|Hornbeam;Morille|Morel;Hêtre|Beech Tree;Abeille|Bee;Laitue|Lettuce;Mélèze|Larch;Ciguë|Hemlock;Radis|Radish;Ruche|Beehive;Gainier|Judas tree;Romaine|Romaine lettuce;Marronnier|Horse chestnut;Roquette|Arugula or Rocket;Pigeon|Pigeon;Lilas|Lilac;Anémone|Wood Anemone;Pensée|Pansy;Myrtille|Bilberry;Greffoir|Grafting knife",
+    "Rose|Rose;Chêne|Oak Tree;Fougère|Fern;Aubépine|Hawthorn;Rossignol|Nightingale;Ancolie|Common Columbine;Muguet|Lily of the valley;Champignon|Button mushroom;Hyacinthe|Hyacinth;Râteau|Rake;Rhubarbe|Rhubarb;Sainfoin|Sainfoin;Bâton d’or|Wallflower;Chamerisier|Fan Palm tree;Ver à soie|Silkworm;Consoude|Comfrey;Pimprenelle|Salad burnet;Corbeille d’or|Basket of Gold;Arroche|Orache;Sarcloir|Weeding hoe;Statice|Sea thrift;Fritillaire|Fritillary;Bourrache|Borage;Valériane|Valerian;Carpe|Carp;Fusain|Euonymus;Civette|Chives;Buglosse|Bugloss;Sénevé|White mustard;Houlette|Shepherd’s crook",
+    "Luzerne|Lucerne;Hémérocalle|Daylily;Trèfle|Clover;Angélique|Garden Angelica;Canard|Duck;Mélisse|Lemon balm;Fromental|Oat grass;Martagon|Martagon lily;Serpolet|Wild Thyme;Faux|Scythe;Fraise|Strawberry;Bétoine|Betony;Pois|Pea;Acacia|Acacia;Caille|Quail;Œillet|Carnation;Sureau|Elderberry;Pavot|Poppy plant;Tilleul|Linden or Lime tree;Fourche|Pitchfork;Barbeau|Cornflower;Camomille|Camomile;Chèvrefeuille|Honeysuckle;Caille-lait|Bedstraw;Tanche|Tench;Jasmin|Jasmine;Verveine|Vervain;Thym|Thyme;Pivoine|Peony;Chariot|Handcart",
+    "Seigle|Rye;Avoine|Oat;Oignon|Onion;Véronique|Speedwell;Mulet|Mule;Romarin|Rosemary;Concombre|Cucumber;Échalote|Shallot;Absinthe|Wormwood;Faucille|Sickle;Coriandre|Coriander;Artichaut|Artichoke;Girofle|Clove;Lavande|Lavender;Chamois|Chamois;Tabac|Tobacco;Groseille|Redcurrant;Gesse|Hairy Vetchling;Cerise|Cherry;Parc|Livestock pen;Menthe|Mint;Cumin|Cumin;Haricot|Bean;Orcanète|Alkanet;Pintade|Guineafowl;Sauge|Sage;Ail|Garlic;Vesce|Tare;Blé|Wheat;Chalémie|Shawm",
+    "Épeautre|Spelt;Bouillon blanc|Common mullein;Melon|Melon;Ivraie|Ryegrass;Bélier|Ram;Prêle|Horsetail;Armoise|Mugwort;Carthame|Safflower;Mûre|Blackberry;Arrosoir|Watering can;Panic|Foxtail millet;Salicorne|Common Glasswort;Abricot|Apricot;Basilic|Basil;Brebis|Ewe;Guimauve|Marshmallow;Lin|Flax;Amande|Almond;Gentiane|Gentian;Écluse|Lock;Carline|Carline thistle;Câprier|Caper;Lentille|Lentil;Aunée|Inula;Loutre|Otter;Myrte|Myrtle;Colza|Rapeseed;Lupin|Lupin;Coton|Cotton;Moulin|Mill",
+    "Prune|Plum;Millet|Millet;Lycoperdon|Puffball;Escourgeon|Six-row Barley;Saumon|Salmon;Tubéreuse|Tuberose;Sucrion|Winter Barley;Apocyn|Apocynum;Réglisse|Liquorice;Échelle|Ladder;Pastèque|Watermelon;Fenouil|Fennel;Épine vinette|European Barberry;Noix|Walnut;Truite|Trout;Citron|Lemon;Cardère|Teasel;Nerprun|Buckthorn;Tagette|Mexican Marigold;Hotte|Harvesting basket;Églantier|Wild Rose;Noisette|Hazelnut;Houblon|Hops;Sorgho|Sorghum;Écrevisse|Crayfish;Bigarade|Bitter orange;Verge d’or|Goldenrod;Maïs|Maize or Corn;Marron|Sweet Chestnut;Panier|Pack Basket",
+  ].map((m) => m.split(";").map((p) => p.split("|")));
+  const EQ_TERMS = [[485, 324.96, 1934.136], [203, 337.23, 32964.467], [199, 342.08, 20.186], [182, 27.85, 445267.112],
+    [156, 73.14, 45036.886], [136, 171.52, 22518.443], [77, 222.54, 65928.934], [74, 296.72, 3034.906],
+    [70, 243.58, 9037.513], [58, 119.81, 33718.147], [52, 297.17, 150.678], [50, 21.02, 2281.226],
+    [45, 247.54, 29929.562], [44, 325.15, 31555.956], [29, 60.93, 4443.417], [18, 155.12, 67555.328],
+    [17, 288.79, 4562.452], [16, 198.04, 62894.029], [14, 199.76, 31436.921], [12, 95.39, 14577.848],
+    [12, 287.11, 31931.756], [12, 320.81, 34777.259], [9, 227.73, 1222.114], [8, 15.45, 16859.074]];
+
+  // Julian Day (UT) of the September equinox of a Gregorian year.
+  function septEquinox(year) {
+    const Y = (year - 2000) / 1000;
+    const j0 = 2451810.21715 + 365242.01767 * Y - 0.11575 * Y * Y + 0.00337 * Y ** 3 + 0.00078 * Y ** 4;
+    const T = (j0 - 2451545) / 36525;
+    const W = 35999.373 * T - 2.47;
+    const dl = 1 + 0.0334 * cos(W) + 0.0007 * cos(2 * W);
+    let S = 0;
+    for (const [a, b, c] of EQ_TERMS) S += a * cos(b + c * T);
+    return j0 + (0.00001 * S) / dl - 69 / 86400;
+  }
+
+  // Julian Day Number of 1 Vendémiaire in the Gregorian year given.
+  const vendemiaire = {};
+  function yearStart(year) {
+    if (!(year in vendemiaire)) {
+      const jd = septEquinox(year);
+      vendemiaire[year] = Math.floor(jd + 2.3371 / 360 + sunAt(jd).eqt + 0.5);
+    }
+    return vendemiaire[year];
+  }
+
+  function roman(n) {
+    const R = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+    let s = "";
+    for (const [v, r] of R) while (n >= v) { s += r; n -= v; }
+    return s;
+  }
+
+  // The Republican date of the reader's local calendar date of d, or null
+  // before 1 Vendémiaire, Year I (22 September 1792).
+  function republican(d) {
+    const u = new Date(0);
+    u.setUTCFullYear(d.getFullYear(), d.getMonth(), d.getDate());
+    const jdn = Math.round(u.getTime() / 86400000) + 2440588;
+    let y = d.getFullYear();
+    if (jdn < yearStart(y)) y -= 1;
+    const year = y - 1791;
+    if (year < 1) return null;
+    const doy = jdn - yearStart(y);
+    const len = yearStart(y + 1) - yearStart(y);
+    return { year, doy, month: Math.floor(doy / 30), day: (doy % 30) + 1, sextile: len === 366 };
+  }
+
   const readers = {
     decimal(d) {
       const s = localSeconds(d);
@@ -473,6 +551,29 @@
       };
     },
 
+    republican(d) {
+      const r = republican(d);
+      const t = localSeconds(d) / DAY;
+      if (!r) return { main: "Before Year I", sub: "the Republic dates from 22 September 1792", frac: t, utc: false };
+      const an = `an ${roman(r.year)}`;
+      if (r.month === 12) {
+        const n = r.doy - 360;
+        return {
+          main: REP_FETES[n][0].replace(/^Fête d(e la |u |e l’|es )/, ""),
+          sub: `${REP_FETES[n][0]}  ·  day ${n + 1} of ${r.sextile ? 6 : 5}  ·  ${an}`,
+          frac: (n + t) / (r.sextile ? 6 : 5),
+          utc: false,
+        };
+      }
+      const [fr, en] = REP_NAMES[r.month][r.day - 1];
+      return {
+        main: `${r.day} ${REP_MONTHS[r.month]}`,
+        sub: `${REP_DAYS[(r.day - 1) % 10]}  ·  ${fr}, ${en.toLowerCase()}  ·  ${an}`,
+        frac: (((r.day - 1) % 10) + t) / 10,
+        utc: false,
+      };
+    },
+
     moon(d) {
       const m = lunation(jdOf(d));
       const age = jdOf(d) - m.last;
@@ -601,6 +702,37 @@
     };
     drawGlyphs();
     setInterval(drawGlyphs, 1000);
+  }
+
+  // Republican page: the ten days of the current décade with their rural
+  // names (or the complementary days), today's marked.
+  const decade = document.getElementById("rep-decade");
+  if (decade) {
+    let shown = null;
+    const drawDecade = () => {
+      const r = republican(current());
+      const key = r ? `${r.year}-${r.doy}` : "none";
+      if (key === shown) return;
+      shown = key;
+      if (!r) { decade.innerHTML = ""; return; }
+      let rows;
+      if (r.month === 12) {
+        rows = REP_FETES.slice(0, r.sextile ? 6 : 5).map(([fr, en], i) =>
+          [i + 360 === r.doy, `${i + 1}`, fr, `Celebration of ${en}`]);
+      } else {
+        const first = Math.floor((r.day - 1) / 10) * 10;
+        rows = REP_DAYS.map((name, i) => {
+          const [fr, en] = REP_NAMES[r.month][first + i];
+          return [first + i + 1 === r.day, `${first + i + 1} · ${name}`, fr, en];
+        });
+      }
+      decade.innerHTML = rows.map(([now, n, fr, en]) =>
+        `<li${now ? ' class="today" aria-current="date"' : ""}><span class="d-n">${n}</span><span class="d-fr" lang="fr">${fr}</span><span class="d-en">${en}</span></li>`).join("");
+      decade.setAttribute("aria-label", r.month === 12 ? "The complementary days" :
+        `Décade ${["I", "II", "III"][Math.floor((r.day - 1) / 10)]} of ${REP_MONTHS[r.month]}`);
+    };
+    drawDecade();
+    setInterval(drawDecade, 1000);
   }
 
   // Moon page: draw the lit part of the disc and name the next phases.
