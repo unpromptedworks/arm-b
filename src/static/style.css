@@ -304,3 +304,13 @@ ul.day-key li { margin-bottom: 0.3rem; }
 @media (prefers-color-scheme: dark) {
   .d-night { fill: #000; opacity: 0.4; }
 }
+
+/* Republican page: the current décade, one day a row, today in brass. */
+ol.decade { list-style: none; margin: 1.5rem auto 0.5rem; padding: 0; max-width: 24rem; text-align: left; }
+ol.decade li { display: grid; grid-template-columns: 7.5rem 1fr; column-gap: 0.75rem; padding: 0.35rem 0.5rem; border-top: 1px solid var(--rule); }
+ol.decade li:first-child { border-top: none; }
+ol.decade li.today { box-shadow: inset 3px 0 0 var(--brass); }
+ol.decade li.today .d-n, ol.decade li.today .d-fr { color: var(--brass); }
+.d-n { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 0.85rem; color: var(--muted); grid-row: span 2; align-self: center; }
+.d-fr { font-family: var(--serif); font-size: 1.05rem; }
+.d-en { font-family: var(--serif); font-style: italic; font-size: 0.85rem; color: var(--muted); }
