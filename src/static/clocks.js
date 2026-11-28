@@ -353,6 +353,30 @@
     return { year, doy, month: Math.floor(doy / 30), day: (doy % 30) + 1, sextile: len === 366 };
   }
 
+  // The Egyptian civil calendar: twelve months of thirty days and five
+  // epagomenal days, 365 days every year with no leap day, so it wanders
+  // against the seasons (Wikipedia, "Egyptian calendar"). Years are counted
+  // in Ptolemy's era of Nabonassar, whose 1 Thoth of year 1 was 26 February
+  // 747 BC, Julian (Wikipedia, "Nabonassar"): Julian Day Number 1448638.
+  // The day turns at the reader's local midnight.
+  const NABONASSAR = 1448638;
+  const EG_MONTHS = ["Thoth", "Phaophi", "Athyr", "Choiak", "Tybi", "Mechir",
+    "Phamenoth", "Pharmuthi", "Pachons", "Payni", "Epiphi", "Mesore"];
+  const EG_SEASONS = [["Akhet", "Inundation"], ["Peret", "Emergence"], ["Shemu", "Low Water"]];
+  const EG_GODS = ["Osiris", "Horus", "Set", "Isis", "Nephthys"];
+  const localJDN = (d) => {
+    const u = new Date(0);
+    u.setUTCFullYear(d.getFullYear(), d.getMonth(), d.getDate());
+    return Math.round(u.getTime() / 86400000) + 2440588;
+  };
+  function egyptian(d) {
+    const jdn = localJDN(d);
+    const n = jdn - NABONASSAR;
+    const year = Math.floor(n / 365) + 1;
+    const doy = mod(n, 365);
+    return { jdn, year, doy, month: Math.floor(doy / 30), day: (doy % 30) + 1 };
+  }
+
   const readers = {
     decimal(d) {
       const s = localSeconds(d);
@@ -574,6 +598,28 @@
       };
     },
 
+    egyptian(d) {
+      const e = egyptian(d);
+      const t = localSeconds(d) / DAY;
+      const ne = e.year >= 1 ? `${e.year.toLocaleString("en")} NE` : `${(1 - e.year).toLocaleString("en")} before NE`;
+      if (e.month === 12) {
+        const n = e.doy - 360;
+        return {
+          main: `Epagomenal ${n + 1}`,
+          sub: `birthday of ${EG_GODS[n]}  ·  ${ne}`,
+          frac: (n + t) / 5,
+          utc: false,
+        };
+      }
+      const [season] = EG_SEASONS[Math.floor(e.month / 4)];
+      return {
+        main: `${e.day} ${EG_MONTHS[e.month]}`,
+        sub: `${["I", "II", "III", "IV"][e.month % 4]} ${season} ${e.day}  ·  ${ne}`,
+        frac: (((e.day - 1) % 10) + t) / 10,
+        utc: false,
+      };
+    },
+
     moon(d) {
       const m = lunation(jdOf(d));
       const age = jdOf(d) - m.last;
@@ -733,6 +779,36 @@
     };
     drawDecade();
     setInterval(drawDecade, 1000);
+  }
+
+  // Egyptian page: the wandering year as a strip of twelve months and the
+  // epagomenal days, today's marked, and where 1 Thoth falls by the
+  // reader's own calendar.
+  const egYear = document.getElementById("eg-year");
+  if (egYear) {
+    const egFacts = document.getElementById("eg-facts");
+    let shown = null;
+    const civil = (jdn) => new Date((jdn - 2440588) * 86400000)
+      .toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+    const drawYear = () => {
+      const e = egyptian(current());
+      if (e.jdn === shown) return;
+      shown = e.jdn;
+      const parts = EG_MONTHS.map((m, i) => [m, ["I", "II", "III", "IV"][i % 4], 30, `s${Math.floor(i / 4)}`])
+        .concat([["Epagomenal", "5", 5, "s3"]]);
+      const seasons = EG_SEASONS.map(([n, g]) => `<li class="eg-season" style="flex-grow:120"><span>${n}</span> <small>${g}</small></li>`).join("") +
+        '<li class="eg-season" style="flex-grow:5"></li>';
+      egYear.innerHTML = `<li class="eg-row"><ol>${seasons}</ol></li><li class="eg-row"><ol>` + parts.map(([m, lab, len, cls], i) => {
+        const now = i === e.month;
+        const mark = now ? `<i class="eg-now" style="width:${((i === 12 ? e.doy - 359 : e.day) / len * 100).toFixed(1)}%"></i>` : "";
+        return `<li class="${cls}${now ? " today" : ""}" style="flex-grow:${len}"${now ? ' aria-current="date"' : ""}>${mark}<span class="eg-m">${m}</span><span class="eg-s">${lab}</span></li>`;
+      }).join("") + "</ol></li>";
+      egYear.setAttribute("aria-label", `The Egyptian year, ${e.month === 12 ? `epagomenal day ${e.doy - 359}` : `${e.day} ${EG_MONTHS[e.month]}`} marked`);
+      const start = e.jdn - e.doy;
+      egFacts.textContent = `This year began on ${civil(start)}; the next 1 Thoth is ${civil(start + 365)}.`;
+    };
+    drawYear();
+    setInterval(drawYear, 1000);
   }
 
   // Moon page: draw the lit part of the disc and name the next phases.
