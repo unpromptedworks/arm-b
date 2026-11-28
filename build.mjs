@@ -111,6 +111,9 @@ clocks.forEach((c, i) => {
   if (c.id === "maya") {
     extra = `<ol class="glyphs" id="maya-glyphs" role="img" aria-label="The Long Count in Maya numerals"></ol>`;
   }
+  if (c.id === "egyptian") {
+    extra = `<ol class="eg-year" id="eg-year" role="img" aria-label="The Egyptian year"></ol><span class="dial-sub" id="eg-facts"></span>`;
+  }
   if (c.id === "republican") {
     extra = `<ol class="decade" id="rep-decade" aria-label="This décade"></ol>`;
   }

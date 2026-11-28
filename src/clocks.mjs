@@ -308,4 +308,27 @@ export const clocks = [
       ["Earth’s Seasons and Apsides", "https://aa.usno.navy.mil/data/Earth_Seasons", "U.S. Naval Observatory, U.S. government work"],
     ],
   },
+  {
+    no: 15,
+    id: "egyptian",
+    slug: "egyptian-civil-calendar",
+    name: "The Egyptian civil calendar",
+    basis: "local",
+    teaser: "365 days, no leap year, and a New Year that wanders.",
+    description:
+      "A live reading of the ancient Egyptian civil calendar: twelve months of thirty days and five days upon the year, counted in the era of Nabonassar, drifting a day every four years.",
+    read: `
+      <p>The year has exactly 365 days: three seasons of four months, each month of thirty days, and five extra days at the end.<sup><a href="#s1">1</a></sup> The seasons are Akhet, the Inundation, Peret, the Emergence, and Shemu, Low Water, and a month was written by its number within its season, so that New Year’s Day was I Akhet 1.<sup><a href="#s1">1</a></sup> Each month fell into three periods of ten days.<sup><a href="#s1">1</a></sup></p>
+      <p>The reading gives the day and the month under its Greek name, the form Ptolemy used for dates in his <i>Almagest</i>;<sup><a href="#s1">1</a></sup> the line beneath gives the same day in the Egyptian form and the year. The bar fills through the current ten days. The five extra days, “those upon the year”, belong to no month; they were kept as the birthdays of Osiris, Horus, Set, Isis and Nephthys,<sup><a href="#s1">1</a></sup> and on them the clock names the god.</p>
+      <p>Years are counted in the era of Nabonassar, which Ptolemy’s <i>Almagest</i> starts at noon on 26 February 747 BC,<sup><a href="#s3">3</a></sup> by the Julian calendar. On that count today’s date is the one Wikipedia gives for it.<sup><a href="#s1">1</a></sup> No source here says when the Egyptian day began, so the clock turns it at your local midnight, like the other date drawers. Below the dial, the year is drawn as a strip of months with today marked, and the line under it says where this year’s 1 Thoth fell by your own calendar. To read any other date, stop the cabinet on the <a href="/moment/">one-moment page</a>.</p>`,
+    history: `
+      <p>The civil calendar was set up at some early date in or before the Old Kingdom, with probable evidence of its use early in the reign of Shepseskaf, about 2510 BC, and certain evidence in the mid-25th century BC.<sup><a href="#s1">1</a></sup> Before it the Egyptians seem to have kept a purely lunar calendar.<sup><a href="#s1">1</a></sup> The new year was probably tied to the star Sirius, Sopdet, whose return to the dawn sky came close to the average start of the Nile flood.<sup><a href="#s1">1</a></sup></p>
+      <p>A solar year is about a quarter of a day longer than 365 days, and the Egyptian year never made up the difference. It slipped about one day every four years against the seasons and the Julian calendar, which is why it is called the <i>annus vagus</i>, the wandering year.<sup><a href="#s1">1</a></sup> The rising of Sirius walked backwards through the months and came back to 1 Thoth after 1,461 Egyptian years, which are 1,460 Julian ones: the Sothic cycle.<sup><a href="#s2">2</a></sup> The Roman writer Censorinus recorded such a return; calculation puts the star’s rising on 20 July AD 139, Julian.<sup><a href="#s2">2</a></sup> This clock gives 1 Thoth of year 887 of Nabonassar as 20 July 139, Julian, so it agrees; the <a href="/moment/">one-moment page</a>, which uses the Gregorian calendar extended backwards, shows that day as 19 July.</p>
+      <p>In 238 BC the Canopus decree of Ptolemy III ordered a sixth extra day every fourth year; the priests and the people resisted, and it was dropped.<sup><a href="#s1">1</a></sup> Augustus imposed the reform in 26 or 25 BC, making the Alexandrian calendar, which follows the Julian almost exactly; its first leap day was the sixth epagomenal day of 22 BC.<sup><a href="#s1">1</a></sup> In it 1 Thoth stays on 29 August, Julian, except in the year before a Julian leap year, when it falls on the 30th,<sup><a href="#s1">1</a></sup> and it lives on as the Coptic calendar, still used in Egypt by the Coptic Church and by many people.<sup><a href="#s1">1</a></sup> Its shape is that of the drawer for <a href="/clocks/french-republican-calendar/">the French Republican calendar</a>, which has the same twelve months of thirty days, the same three ten-day periods in each, and five extra days, but adds a sixth to keep pace with the Sun.</p>`,
+    sources: [
+      ["Egyptian calendar", "https://en.wikipedia.org/wiki/Egyptian_calendar", "Wikipedia, CC BY-SA 4.0"],
+      ["Sothic cycle", "https://en.wikipedia.org/wiki/Sothic_cycle", "Wikipedia, CC BY-SA 4.0"],
+      ["Nabonassar", "https://en.wikipedia.org/wiki/Nabonassar", "Wikipedia, CC BY-SA 4.0"],
+    ],
+  },
 ];
